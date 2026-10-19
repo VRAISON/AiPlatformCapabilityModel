@@ -128,6 +128,8 @@ cd site
 node build.js && node build-lens.js && node render-map.js
 ```
 
+`node package-web.js` then copies the page, icons, and downloads into the static sites that publish it, stamping each site's GA4 measurement id from its `site.json`. The artifact and this repository carry no tag.
+
 ### Exporting the data
 
 ```sh
