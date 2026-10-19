@@ -24,7 +24,8 @@ function gtag(id) {
 }
 const page = fs.readFileSync(path.join(here, 'lens-preview.html'), 'utf8');
 if (!page.includes('</head>')) throw new Error('lens-preview.html has no <head>; run build-lens.js first');
-const copyDir = (from, to) => { fs.rmSync(to, { recursive: true, force: true }); fs.cpSync(from, to, { recursive: true, filter: p => !/\.DS_Store$/.test(p) }); };
+const copyDir = (from, to) => { fs.rmSync(to, { recursive: true, force: true }); fs.cpSync(from, to, { recursive: true, preserveTimestamps: true, filter: p => !/\.DS_Store$/.test(p) }); };
+// Timestamps are preserved so the sites' S3 sync re-uploads only files that changed.
 for (const t of TARGETS) {
   const cfg = JSON.parse(fs.readFileSync(path.join(t.site, 'site.json'), 'utf8'));
   const id = ((cfg.analytics || {}).ga4 || '').trim();
