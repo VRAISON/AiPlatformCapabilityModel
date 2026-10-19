@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this model or its data, please cite it as below."
+type: dataset
+title: "AI Platform Capability Model"
+abstract: >-
+  A product-neutral capability model of AI agent platforms in three tiers:
+  8 capability areas, 25 capabilities, and 127 services. Each service is one
+  functional pattern on one asset, with a five-section architectural profile
+  and evidence of which of nine platforms exhibit it.
+authors:
+  - family-names: "Corcoran"
+    given-names: "Patrick"
+version: "v3"
+date-released: "2026-10-18"
+license: "CC-BY-4.0"
+keywords:
+  - "capability model"
+  - "AI agents"
+  - "agent platforms"
+  - "enterprise architecture"
+  - "BIAN"
+  - "service landscape"

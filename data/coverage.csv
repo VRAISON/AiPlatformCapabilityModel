@@ -1,0 +1,128 @@
+id,service,Cx,Cl,Cp,Ge,Ag,Gk,He,Qw,Ol,total
+BA1.01.01,Session Catalog,1,1,1,1,1,1,1,1,0,8
+BA1.01.02,Transcript Log,1,1,1,1,1,1,1,1,0,8
+BA1.01.03,Workspace Binding,1,1,1,1,1,1,1,1,0,8
+BA1.01.04,Attachment Store,0,0,1,0,0,0,0,0,0,1
+BA1.01.05,External Reference,0,0,1,0,0,0,0,0,0,1
+BA1.02.01,Turn Execution,1,1,1,1,1,1,1,1,0,8
+BA1.02.02,Tool Call Dispatch,1,1,1,1,1,1,1,1,0,8
+BA1.03.01,Turn Interrupt,1,1,1,1,1,1,1,1,0,8
+BA1.03.02,Message Steering,0,1,1,0,0,0,0,0,0,2
+BA1.03.03,Human Input Request,0,1,1,0,0,0,0,0,0,2
+BA1.03.04,Run & Spend Limit,0,1,0,0,1,0,0,1,0,3
+BA1.04.01,Resume Set,1,0,1,0,1,1,0,0,0,4
+BA1.04.02,Session Search,0,0,1,0,0,1,0,0,0,2
+BA1.04.03,Session Fork,0,0,1,0,0,0,0,0,0,1
+BA1.04.04,Progress Checkpoint,0,0,1,0,0,0,0,0,0,1
+BA1.04.05,Session Share Link,0,0,0,0,0,0,0,0,0,0
+BA1.05.01,File Rewind,0,1,1,0,0,0,0,0,0,2
+BA1.05.02,Context Compaction,0,0,1,0,0,0,1,0,0,2
+BA1.05.03,Archive & Erasure,0,0,1,0,0,0,0,0,0,1
+BA1.05.04,Transcript Export,0,0,0,0,0,0,0,0,0,0
+BA2.01.01,Workspace Trust,1,0,1,1,1,1,0,0,0,5
+BA2.01.02,Managed Policy,0,1,1,0,0,0,0,0,0,2
+BA2.01.03,Content Exclusion,0,1,1,1,0,0,0,0,0,3
+BA2.01.04,Untrusted Content Guard,0,0,0,0,0,0,0,0,0,0
+BA2.02.01,Account & Credential,1,1,1,1,0,1,1,1,0,7
+BA2.02.02,Data Use Consent,0,1,1,0,0,0,0,0,0,2
+BA2.02.03,Agent Credential,0,0,0,0,0,0,0,0,0,0
+BA2.03.01,Sandbox Policy,1,0,1,0,0,0,1,0,0,3
+BA2.03.02,Network Egress,1,0,1,0,0,0,0,0,0,2
+BA2.03.03,Approval Mode,1,1,0,0,0,1,0,0,0,3
+BA2.03.04,Remembered Grant,0,1,1,0,0,0,0,0,0,2
+BA2.03.05,Permission Stream,0,0,1,0,1,0,0,0,0,2
+BA2.03.06,Secret Redaction,0,0,0,0,0,0,0,0,0,0
+BA2.03.07,Secret Injection,0,0,0,0,0,0,0,0,0,0
+BA2.03.08,Content Safety,0,0,0,0,0,0,0,0,0,0
+BA2.03.09,Audit Export,0,0,0,0,0,0,0,0,0,0
+BA2.04.01,User Settings,1,1,1,1,0,1,1,1,0,7
+BA2.04.02,Project Settings,0,1,1,0,0,0,0,1,0,3
+BA2.04.03,Feature Flag,0,0,1,1,0,0,0,1,0,3
+BA3.01.01,Shell Execution,1,1,1,1,1,1,1,1,0,8
+BA3.01.02,File Edit,1,1,1,1,1,1,1,1,0,8
+BA3.01.03,Code Search,0,0,1,0,0,0,0,0,0,1
+BA3.01.04,Web Retrieval,1,1,0,1,0,0,0,0,0,3
+BA3.01.05,Browser & Computer Use,1,0,0,0,0,0,1,0,0,2
+BA3.01.06,Code Interpreter,1,0,0,0,0,0,0,0,0,1
+BA3.01.07,Language Service,0,1,0,0,0,0,0,0,0,1
+BA3.01.08,Codebase Index,0,0,0,0,0,0,0,0,0,0
+BA3.02.01,Skill Pack,1,1,0,0,1,1,1,1,0,6
+BA3.02.02,Plugin Marketplace,1,1,1,0,0,1,0,0,0,4
+BA3.02.03,MCP Server,1,1,1,1,0,0,0,0,0,4
+BA3.02.04,Skill Mining,0,0,1,0,0,1,0,0,0,2
+BA3.02.05,Plugin Verification,0,0,0,0,0,0,0,0,0,0
+BA3.02.06,MCP Sampling,0,0,0,0,0,0,0,0,0,0
+BA3.03.01,Slash Command,0,1,0,1,0,0,0,1,0,3
+BA3.03.02,Workflow Script,0,0,0,0,1,1,0,0,0,2
+BA3.03.03,Persona Definition,0,0,0,0,0,1,1,0,0,2
+BA3.03.04,Role Assignment,0,1,0,0,0,1,0,0,0,2
+BA3.03.05,Lifecycle Hook,0,0,1,0,0,0,0,1,0,2
+BA3.03.06,Output Style,0,0,0,0,0,0,0,1,0,1
+BA4.01.01,Prompt Assembly,1,1,1,1,1,1,1,1,0,8
+BA4.01.02,Instruction File,1,1,0,1,0,0,1,1,0,5
+BA4.01.03,Instruction Precedence,0,1,0,1,0,0,0,1,0,3
+BA4.01.04,System Prompt Override,0,1,0,0,0,0,0,1,0,2
+BA4.01.05,Dynamic Context,0,0,1,0,0,0,0,0,0,1
+BA4.01.06,Context Budget,0,0,0,0,0,0,0,0,0,0
+BA4.02.01,Memory Index,0,1,0,1,0,0,0,1,0,3
+BA4.02.02,Topic Note,0,1,0,0,0,1,0,0,0,2
+BA4.02.03,Knowledge Base,0,0,0,0,1,0,0,0,0,1
+BA4.02.04,Team Memory,0,0,0,0,0,0,0,1,0,1
+BA4.02.05,User Profile,0,0,0,0,0,0,1,0,0,1
+BA4.03.01,Memory Maintenance,1,0,0,0,0,1,0,1,0,3
+BA4.03.02,Memory Retrieval,0,0,0,0,0,1,0,0,0,1
+BA4.03.03,Memory Erasure,0,0,0,0,0,1,0,0,0,1
+BA5.01.01,Change Staging,0,0,1,0,0,0,0,0,0,1
+BA5.01.02,Edit Attribution,0,0,1,0,0,0,0,0,0,1
+BA5.01.03,Commit Authoring,0,1,1,0,0,0,0,0,0,2
+BA5.01.04,Worktree Isolation,0,0,1,0,0,1,0,0,0,2
+BA5.01.05,Repository State,0,0,1,0,0,0,0,0,0,1
+BA5.02.01,Review Annotation,0,0,1,0,1,0,0,0,0,2
+BA5.02.02,Code Review,1,0,1,0,0,1,0,0,0,3
+BA5.02.03,Pull Request Flow,0,0,1,0,1,0,0,0,0,2
+BA6.01.01,Execution Plan,0,1,0,0,1,1,0,0,0,3
+BA6.01.02,Goal & Budget,1,0,0,0,0,0,0,0,0,1
+BA6.02.01,Subagent Delegation,1,0,1,0,1,0,1,0,0,4
+BA6.02.02,Foreign Agent Hosting,0,0,1,0,0,0,0,0,0,1
+BA6.02.03,Competing Runs,0,0,0,0,1,0,0,0,0,1
+BA6.02.04,Peer Message,0,0,1,0,0,0,1,0,0,2
+BA6.03.01,Issue Intake,0,0,1,0,1,0,0,0,0,2
+BA6.03.02,Follow-up Queue,1,0,1,0,0,0,0,0,0,2
+BA6.03.03,Scheduled Job,0,0,1,0,0,0,1,0,0,2
+BA6.03.04,Event Trigger,0,1,1,0,0,0,0,0,0,2
+BA6.03.05,Work Board,0,0,0,0,0,0,1,0,0,1
+BA6.04.01,Remote Control,1,0,1,1,0,0,0,0,0,3
+BA6.04.02,Cloud Run,1,1,1,0,0,0,0,0,0,3
+BA6.04.03,Shared Room,0,0,0,0,0,0,1,0,0,1
+BA6.04.04,Fleet Console,0,0,1,0,0,0,0,0,0,1
+BA7.01.01,Model Catalog,1,0,1,0,0,1,0,0,1,4
+BA7.01.02,Model Selection,1,1,1,0,0,0,1,1,0,5
+BA7.01.03,Provider Routing,0,0,1,0,0,0,1,1,0,3
+BA7.01.04,Local Runtime,0,0,0,0,0,0,0,1,1,2
+BA7.01.05,Custom Model Build,0,0,0,0,0,0,0,0,1,1
+BA7.01.06,Bring-your-own Key,0,0,1,0,0,0,0,0,0,1
+BA7.01.07,Retry & Rate Limit,0,1,1,0,0,0,0,0,0,2
+BA7.02.01,Generation Control,1,0,1,0,0,0,1,0,1,4
+BA7.02.02,Usage Account,1,1,1,0,0,0,1,1,0,5
+BA7.02.03,Prompt Cache,0,0,1,0,0,0,0,0,0,1
+BA7.02.04,Plan & Entitlement,0,1,1,0,0,0,0,0,0,2
+BA8.01.01,Command Line,1,1,1,1,1,1,1,1,0,8
+BA8.01.02,Headless Run,1,1,1,1,1,1,0,1,0,7
+BA8.01.03,Agent Protocol Server,1,0,1,0,0,1,0,0,0,3
+BA8.01.04,Embeddable SDK,1,1,1,0,0,0,0,0,0,3
+BA8.01.05,IDE Attach,1,1,1,1,0,0,0,0,0,4
+BA8.01.06,Messaging Channel,0,0,0,0,0,0,1,0,0,1
+BA8.01.07,Voice,1,0,0,0,0,0,1,0,0,2
+BA8.01.08,Multimodal Input,1,1,0,1,0,0,0,0,0,3
+BA8.01.09,Document Authoring,1,0,0,0,0,1,0,0,0,2
+BA8.01.10,Media Processing,0,0,0,0,0,0,1,0,0,1
+BA8.01.11,Media Generation,0,0,0,0,0,0,0,0,0,0
+BA8.01.12,Canvas Document,0,0,1,0,0,0,0,0,0,1
+BA8.01.13,Desktop & Push Notification,1,1,0,0,0,0,0,0,0,2
+BA8.01.14,Web & Mobile Surface,0,0,0,0,0,0,0,0,0,0
+BA8.02.01,Runtime Log,0,1,1,0,1,0,0,0,1,4
+BA8.02.02,Telemetry & Crash,0,1,1,0,1,0,0,0,0,3
+BA8.02.03,Version & Update,1,1,1,0,1,1,0,0,0,5
+BA8.02.04,Gateway Liveness,0,0,1,0,0,0,1,0,0,2
+BA8.02.05,Health Check,0,1,0,0,0,1,0,0,0,2
+BA8.02.06,Feedback Capture,0,1,0,0,0,0,0,0,0,1

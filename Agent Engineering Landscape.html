@@ -1,0 +1,326 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Agent Engineering Landscape</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ground:#EAEEF2;
+    --surface:#FFFFFF;
+    --surface-2:#F2F5F8;
+    --ink:#101821;
+    --muted:#57646F;
+    --faint:#8996A2;
+    --line:#D3DBE3;
+    --line-soft:#E3E9EE;
+    --accent:#C2410C;
+    /* area hues */
+    --a1:#3D6098; --a2:#2F8071; --a3:#8A5A2B; --a4:#8B3A62; --a5:#4B5A8F; --a6:#556170;
+    /* coverage */
+    --impl:#1C7A46; --impl-bg:#E2F0E8;
+    --part:#B0761A; --part-bg:#F6ECD6;
+    --plan:#2F5D8A; --plan-bg:#E2EBF4;
+    --gap:#B23A2C;  --gap-bg:#F6E0DC;
+    --shadow:0 1px 2px rgba(16,24,33,.05),0 6px 18px rgba(16,24,33,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --ground:#0D1218;--surface:#151C24;--surface-2:#1B242E;--ink:#E7ECF1;--muted:#98A5B1;--faint:#68757F;--line:#28313C;--line-soft:#202832;--accent:#F97316;
+    --a1:#6C93C9;--a2:#4FB9A5;--a3:#C79256;--a4:#C77299;--a5:#8494C8;--a6:#8593A1;
+    --impl:#3ECB7E;--impl-bg:#12251A;--part:#E0A73B;--part-bg:#2A2212;--plan:#6FA0CE;--plan-bg:#14202D;--gap:#E0765F;--gap-bg:#2A1712;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="dark"]{
+    --ground:#0D1218;--surface:#151C24;--surface-2:#1B242E;--ink:#E7ECF1;--muted:#98A5B1;--faint:#68757F;--line:#28313C;--line-soft:#202832;--accent:#F97316;
+    --a1:#6C93C9;--a2:#4FB9A5;--a3:#C79256;--a4:#C77299;--a5:#8494C8;--a6:#8593A1;
+    --impl:#3ECB7E;--impl-bg:#12251A;--part:#E0A73B;--part-bg:#2A2212;--plan:#6FA0CE;--plan-bg:#14202D;--gap:#E0765F;--gap-bg:#2A1712;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding-inline:18px;padding-block:0}
+  h1{font-family:"Archivo",sans-serif;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+
+  header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--ground) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-soft)}
+  header.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:"Archivo";font-weight:800;letter-spacing:-.02em;font-size:1rem}
+  .brand .glyph{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#7c2d12);display:grid;place-items:center;color:#fff;font-family:"Archivo";font-weight:800;font-size:.85rem}
+  header.top .spacer{flex:1}
+  .toggle{font-family:"IBM Plex Mono";font-size:.7rem;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+  .toggle:hover{color:var(--ink);border-color:var(--muted)}
+
+  .intro{padding-block:26px 8px}
+  .intro h1{font-size:clamp(1.7rem,4.5vw,2.6rem);margin:8px 0 12px;line-height:1.04}
+  .intro p{max-width:74ch;color:var(--muted);margin:0 0 10px;font-size:1rem}
+  .intro p b{color:var(--ink);font-weight:600}
+
+  .keys{display:flex;flex-wrap:wrap;gap:22px;padding:14px 0 22px;border-bottom:1px solid var(--line-soft)}
+  .keyblock{min-width:180px}
+  .keyblock .kt{font-family:"IBM Plex Mono";font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+  .krow{display:flex;flex-wrap:wrap;gap:6px 12px}
+  .ki{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted)}
+  .dot{width:11px;height:11px;border-radius:3px;flex:none}
+  .patlist{font-size:.75rem;color:var(--muted);line-height:1.7;max-width:60ch}
+  .pat{font-family:"IBM Plex Mono";font-size:.66rem;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-right:2px}
+
+  /* landscape grid */
+  .landscape{padding-block:22px 10px}
+  .areas{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:start}
+  .area{display:flex;flex-direction:column;gap:9px}
+  .ahead{border-radius:9px 9px 0 0;padding:9px 11px;color:#fff;font-family:"Archivo";font-weight:700;font-size:.86rem;line-height:1.1;letter-spacing:-.01em}
+  .ahead .an{font-family:"IBM Plex Mono";font-weight:600;font-size:.64rem;opacity:.85;display:block;letter-spacing:.08em;margin-bottom:2px}
+  .domain{display:flex;flex-direction:column;gap:6px}
+  .dhead{font-family:"IBM Plex Mono";font-size:.64rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:2px 2px 0}
+  .tile{background:var(--surface);border:1px solid var(--line);border-left-width:3px;border-radius:7px;padding:8px 9px;box-shadow:var(--shadow);position:relative}
+  .tile .tn{font-weight:600;font-size:.79rem;line-height:1.18;letter-spacing:-.005em}
+  .tile .tm{font-family:"IBM Plex Mono";font-size:.63rem;color:var(--faint);margin-top:3px;line-height:1.3}
+  .tile .tm b{color:var(--muted);font-weight:600}
+  .tile .ref{font-family:"IBM Plex Mono";font-size:.6rem;color:var(--faint);margin-top:4px;display:block}
+  .tile.impl{border-left-color:var(--impl);background:linear-gradient(0deg,var(--impl-bg),var(--impl-bg)) padding-box,var(--surface)}
+  .tile.part{border-left-color:var(--part)}
+  .tile.plan{border-left-color:var(--plan)}
+  .tile.gap{border-left-color:var(--gap);background:var(--gap-bg)}
+  .tile .badge{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%}
+  .tile.impl .badge{background:var(--impl)} .tile.part .badge{background:var(--part)} .tile.plan .badge{background:var(--plan)} .tile.gap .badge{background:var(--gap)}
+
+  .callout{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--gap);border-radius:10px;padding:14px 16px;margin-top:24px}
+  .callout .lb{font-family:"IBM Plex Mono";font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gap);font-weight:600;margin-bottom:5px}
+  .callout p{margin:0;font-size:.9rem;color:var(--muted);max-width:80ch}
+  .callout p b{color:var(--ink)}
+
+  .tally{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+  .tcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 14px;box-shadow:var(--shadow);border-top-width:3px}
+  .tcard.impl{border-top-color:var(--impl)} .tcard.part{border-top-color:var(--part)} .tcard.plan{border-top-color:var(--plan)} .tcard.gap{border-top-color:var(--gap)}
+  .tcard .n{font-family:"Archivo";font-weight:800;font-size:1.6rem;line-height:1;font-variant-numeric:tabular-nums}
+  .tcard .k{font-size:.74rem;color:var(--muted);margin-top:5px}
+
+  footer{padding-block:24px;color:var(--faint);font-size:.75rem}
+
+  @media (max-width:1080px){.areas{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:720px){.areas{grid-template-columns:repeat(2,1fr)}.tally{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:440px){.areas{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="glyph">L</span>LaForge</div>
+    <div class="spacer"></div>
+    <button class="toggle" id="themeBtn" type="button">theme</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <div class="eyebrow">BIAN-style service landscape &middot; Governed Multi-Agent Engineering</div>
+    <h1>The service landscape for a<br>multi-agent engineering OS.</h1>
+    <p>A capability map in the BIAN idiom: three tiers — <b>Business Areas</b> (the columns), <b>Business Domains</b> (the grouped headers), and <b>Service Domains</b> (the atomic tiles). Every service domain is a non-overlapping partition of capability, described by one <b>functional pattern</b> acting on one <b>asset type</b> — e.g. <span class="mono">Fulfill · Feature</span>. It is product-neutral: this is the shape of the class of software, not of LaForge specifically.</p>
+    <p>Each tile is then shaded by <b>LaForge's coverage today</b>, read from the live record. The map's story is legible at a glance: a solid core of production and settlement, and one domain — <span class="mono">Attestation &amp; Provenance</span> — that is almost entirely open.</p>
+  </section>
+
+  <section class="keys">
+    <div class="keyblock">
+      <div class="kt">LaForge coverage</div>
+      <div class="krow">
+        <span class="ki"><span class="dot" style="background:var(--impl)"></span>Implemented</span>
+        <span class="ki"><span class="dot" style="background:var(--part)"></span>Partial</span>
+        <span class="ki"><span class="dot" style="background:var(--plan)"></span>Planned (on backlog)</span>
+        <span class="ki"><span class="dot" style="background:var(--gap)"></span>Gap (unspecified)</span>
+      </div>
+    </div>
+    <div class="keyblock" style="flex:1">
+      <div class="kt">Functional patterns (the archetype on each tile)</div>
+      <div class="patlist">
+        <span class="pat">Direct</span><span class="pat">Manage</span><span class="pat">Administer</span><span class="pat">Design</span><span class="pat">Provision</span><span class="pat">Fulfill</span><span class="pat">Operate</span><span class="pat">Maintain</span><span class="pat">Track</span><span class="pat">Monitor</span><span class="pat">Analyze</span><span class="pat">Register</span><span class="pat">Agree</span><span class="pat">Assess</span><span class="pat">Allocate</span><span class="pat">Advise</span><span class="pat">Process</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="landscape">
+    <div class="areas" id="areas"></div>
+
+    <div class="tally" id="tally"></div>
+
+    <div class="callout">
+      <div class="lb">Reading the map</div>
+      <p>The <b>Attestation &amp; Provenance</b> domain is the field's newest and LaForge's emptiest: three of its four service domains have no feature in the 118-item record. This is not an oversight to shame — it is the exact frontier the "signed Proof of Execution" thesis lives on, and the map shows it is <b>net-new territory</b>, not a half-built corner. Everything to its left (execution, calibration, certification) is what makes that frontier reachable.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p style="margin:0 0 4px" class="mono">LaForge · getlaforge.com — landscape assessment, 2026-09-18. Tiers &amp; patterns follow the BIAN Service Landscape convention.</p>
+    <p style="margin:0">Coverage shading and feature refs read from the live record (maineng/, products/cli). Service-domain partitioning is an assessment, not a record artifact.</p>
+  </footer>
+</main>
+
+<script>
+  (function(){
+    var btn=document.getElementById('themeBtn'),root=document.documentElement;
+    function cur(){var t=root.getAttribute('data-theme');if(t)return t;return(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+    try{var s=localStorage.getItem('lf-theme');if(s)root.setAttribute('data-theme',s);}catch(e){}
+    btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('lf-theme',n);}catch(e){}});
+  })();
+
+  // Landscape data. tile = [name, pattern, asset, status, ref]
+  var AREAS=[
+    {id:"BA1", name:"Direction & Governance", hue:"var(--a1)", domains:[
+      {name:"Product Direction", tiles:[
+        ["Product Portfolio Direction","Direct","Product","part","feat-0004"],
+        ["Backlog Prioritization","Manage","Priority","impl","feat-0050"],
+        ["Capability Definition","Design","Capability","impl","cap · la capability"],
+      ]},
+      {name:"Decision Authority", tiles:[
+        ["Decision Record Mgmt","Register","Decision","impl","la decide"],
+        ["Ruling & Escalation","Agree","Ruling","part","feat-0112"],
+        ["Policy & Fence Admin","Administer","Policy","impl","feat-0051"],
+      ]},
+      {name:"Human Command (HITL)", tiles:[
+        ["Operator Command","Direct","Session","impl","operator seat"],
+        ["Step-up Authorization","Agree","Authorization","plan","feat-0044"],
+        ["Second-Human Oversight","Advise","Approval","plan","feat-0024"],
+      ]},
+    ]},
+    {id:"BA2", name:"Crew Orchestration", hue:"var(--a2)", domains:[
+      {name:"Crew Management", tiles:[
+        ["Seat / Actor Registry","Register","Actor","impl","feat-0101/0103"],
+        ["Crew Liveness Monitoring","Monitor","Session","impl","feat-0073"],
+        ["Team Formation & Assignment","Allocate","Team","impl","feat-0051"],
+      ]},
+      {name:"Session Lifecycle", tiles:[
+        ["Session Provisioning","Provision","Session","part","feat-0104"],
+        ["Identity Witness","Assess","Identity","impl","feat-0102"],
+        ["Session Cost & Budget","Monitor","Budget","plan","feat-0041/0064"],
+      ]},
+      {name:"Inter-Agent Comms", tiles:[
+        ["Message Bus Operation","Operate","Message","impl","feat-0033/0045"],
+        ["Conversation / Threads","Maintain","Conversation","impl","feat-0043"],
+        ["Handover Journaling","Register","Handover","impl","feat-0082 · la log"],
+      ]},
+      {name:"Harness Integration", tiles:[
+        ["Tool-Call Shim / Gateway","Process","Tool Call","plan","feat-0105"],
+        ["Model & Platform Routing","Allocate","Model","plan","feat-0063"],
+        ["Agent Plugin Admin","Administer","Plugin","plan","feat-0010/0037"],
+      ]},
+    ]},
+    {id:"BA3", name:"Engineering Production", hue:"var(--a3)", domains:[
+      {name:"Work Management", tiles:[
+        ["Feature Lifecycle","Fulfill","Feature","impl","la feature"],
+        ["Issue / Defect Mgmt","Track","Issue","impl","feat-0069/0017"],
+        ["Field Report Intake","Register","Field Report","impl","feat-0065"],
+      ]},
+      {name:"Specification & Design", tiles:[
+        ["Specification Authoring","Design","Spec","impl","feat-0107/0108"],
+        ["Design Canvas","Design","Design Artifact","part","feat-0086/0098"],
+        ["Change Request Handling","Agree","Change Request","plan","feat-0088"],
+      ]},
+      {name:"Source Control Flow", tiles:[
+        ["Branch Provisioning","Provision","Branch","impl","feat-0052"],
+        ["Merge Orchestration","Fulfill","Merge","impl","feat-0097"],
+        ["Worktree Isolation","Administer","Worktree","impl","feat-0109/0095"],
+      ]},
+    ]},
+    {id:"BA4", name:"Verification & Settlement", hue:"var(--a4)", domains:[
+      {name:"Evidence & Testing", tiles:[
+        ["Row / Check Execution","Fulfill","Test Run","impl","gate runs rows"],
+        ["Calibration Assay","Assess","Calibration","impl","feat-0106"],
+        ["Check Classification","Register","Check Class","impl","feat-0077"],
+      ]},
+      {name:"Certification Gate", tiles:[
+        ["Merge-Gate Certification","Assess","Certification","impl","feat-0076"],
+        ["Author / Certifier Split","Agree","Certification","part","feat-0013"],
+        ["Autonomous Work Accounting","Track","Verified Work","plan","feat-0113"],
+      ]},
+      {name:"Continuous Assurance", tiles:[
+        ["Continuous Integration","Monitor","Push","plan","feat-0055"],
+        ["Supply-Chain Scanning","Monitor","Dependency","plan","feat-0056"],
+        ["Deterministic Assessment","Analyze","Agent Behaviour","plan","feat-0062/0114"],
+      ]},
+      {name:"Attestation & Provenance", tiles:[
+        ["Evidence Pack Assembly","Process","Evidence Bundle","plan","feat-0022"],
+        ["Cryptographic Signing","Process","Signature","gap","no feature"],
+        ["Hash-Chain / Merkle Ledger","Maintain","Proof Chain","gap","no feature"],
+        ["Offline Verification","Assess","Release Cert","gap","no la verify"],
+      ]},
+    ]},
+    {id:"BA5", name:"Record & Knowledge", hue:"var(--a5)", domains:[
+      {name:"The Record Store", tiles:[
+        ["Record Entry Mgmt","Maintain","Record Entry","impl","feat-0011/0067"],
+        ["Content-Addressed Artifacts","Administer","Artifact","impl","feat-0081"],
+        ["Asset Store (binaries)","Administer","Asset","impl","feat-0087"],
+      ]},
+      {name:"Knowledge & Search", tiles:[
+        ["Corpus Search","Analyze","Record","impl","feat-0016"],
+        ["Learnings Register","Register","Learning","plan","feat-0047"],
+        ["Correction Chains","Maintain","Correction","impl","feat-0061"],
+      ]},
+      {name:"Integrity & Lifecycle", tiles:[
+        ["Record Health Instrumentation","Monitor","Record","plan","feat-0019"],
+        ["Retention & Erasure","Administer","Record","plan","feat-0025"],
+        ["Record Survival / Backup","Maintain","Record","plan","feat-0018"],
+      ]},
+      {name:"Analytics", tiles:[
+        ["Delivery Analytics","Analyze","Delivery","plan","feat-0054"],
+        ["Cost Accounting","Analyze","Cost","plan","feat-0041"],
+      ]},
+    ]},
+    {id:"BA6", name:"Platform & Interface", hue:"var(--a6)", domains:[
+      {name:"Installation & Runtime", tiles:[
+        ["Install / Uninstall","Provision","Installation","impl","feat-0001"],
+        ["Self-Upgrade","Fulfill","Upgrade","impl","feat-0110/0112"],
+        ["Component Swap","Maintain","Component","impl","feat-0111/0115"],
+        ["Storage Tiers","Administer","Storage","plan","feat-0118"],
+      ]},
+      {name:"Model Runtimes", tiles:[
+        ["Runtime Station Daemon","Operate","Runtime","plan","feat-0034"],
+        ["Runtime Install & Probe","Provision","Runtime","plan","feat-0035"],
+        ["Media Gen Providers","Provision","Media","plan","feat-0036"],
+      ]},
+      {name:"Remote & Multi-Host", tiles:[
+        ["HUD Remote Reach","Operate","Workspace","impl","feat-0003"],
+        ["Sign-in / Accounts","Register","Account","plan","feat-0059"],
+        ["Multi-Machine Stations","Administer","Host","plan","feat-0058"],
+      ]},
+      {name:"Console & Surfaces", tiles:[
+        ["Console Workbench","Operate","Console","impl","feat-0015/0060"],
+        ["Designer Surface","Operate","Surface","part","feat-0083/0098"],
+        ["Surface Reach Measurement","Monitor","Console","impl","feat-0093"],
+        ["Navigation / Info Arch","Design","Navigation","impl","feat-0060/0117"],
+      ]},
+    ]},
+  ];
+
+  var STATUS={impl:"impl",part:"part",plan:"plan",gap:"gap"};
+  var counts={impl:0,part:0,plan:0,gap:0};
+  var root=document.getElementById('areas');
+  AREAS.forEach(function(a){
+    var col=document.createElement('div');col.className='area';
+    var h=document.createElement('div');h.className='ahead';h.style.background=a.hue;
+    h.innerHTML='<span class="an">'+a.id+'</span>'+a.name;
+    col.appendChild(h);
+    a.domains.forEach(function(d){
+      var dom=document.createElement('div');dom.className='domain';
+      var dh=document.createElement('div');dh.className='dhead';dh.textContent=d.name;dom.appendChild(dh);
+      d.tiles.forEach(function(t){
+        var st=t[3];counts[st]++;
+        var tile=document.createElement('div');tile.className='tile '+st;
+        tile.innerHTML='<span class="badge"></span><div class="tn">'+t[0]+'</div>'+
+          '<div class="tm"><b>'+t[1]+'</b> &middot; '+t[2]+'</div>'+
+          (t[4]?'<span class="ref">'+t[4]+'</span>':'');
+        dom.appendChild(tile);
+      });
+      col.appendChild(dom);
+    });
+    root.appendChild(col);
+  });
+
+  var total=counts.impl+counts.part+counts.plan+counts.gap;
+  var tally=document.getElementById('tally');
+  [["impl","Implemented",counts.impl],["part","Partial",counts.part],["plan","Planned on backlog",counts.plan],["gap","Gap — unspecified",counts.gap]].forEach(function(c){
+    var el=document.createElement('div');el.className='tcard '+c[0];
+    el.innerHTML='<div class="n">'+c[2]+'</div><div class="k">'+c[1]+' &middot; of '+total+' service domains</div>';
+    tally.appendChild(el);
+  });
+</script>
+
+</body></html>

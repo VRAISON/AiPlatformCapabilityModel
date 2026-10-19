@@ -1,0 +1,87 @@
+  /* score: self-assessment of a platform against every service */
+  .scid-form{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:end;min-width:0;max-width:100%}
+  .scfield{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%}
+  .scfield span{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .scfield input,.scfield select,.scbulk select{font:inherit;font-size:.86rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 9px;min-width:0;max-width:100%}
+  .scfield input{width:240px}
+  .scfield input::placeholder{color:var(--faint)}
+
+  .sccard{margin-bottom:12px;border-top:4px solid var(--series)}
+  .sccard .scname{font-size:1.35rem;margin:4px 0 12px;overflow-wrap:anywhere}
+  .sccard .lab{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 4px}
+  .scgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px;align-items:start}
+  .scstats .stat{box-shadow:none;background:var(--surface-2)}
+  .scstats .src{overflow-wrap:anywhere}
+  .scstates{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--muted);margin-top:12px}
+  .scstates b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;margin-left:2px}
+  .scstates .sw,.sclegend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid var(--line)}
+  .sw.observed,.sw.sc-observed,.bf.sc-observed{background:var(--series)}
+  .sw.configured,.sw.sc-configured,.bf.sc-configured{background:color-mix(in srgb,var(--series) 68%,var(--surface-2))}
+  .sw.shipped,.sw.sc-shipped,.bf.sc-shipped{background:color-mix(in srgb,var(--series) 40%,var(--surface-2))}
+  .sw.absent{background:var(--surface)}
+  .sclegend .sw.scmk{width:3px;border:0;background:var(--ink)}
+  .sclegend{margin:10px 0 0}
+  .scbrow .bl{display:flex;align-items:center;gap:7px}
+  .scdot{flex:none;width:8px;height:8px;border-radius:2px}
+  .scbrow .bt{height:12px}
+  .scbrow .bf{border-radius:0}
+  .scmark{position:absolute;top:-2px;bottom:-2px;width:2px;margin-left:-1px;background:var(--ink)}
+  .scbrow .bv{min-width:62px;text-align:right}
+  .scd{display:inline-block;min-width:28px;margin-left:6px;text-align:right;font-weight:600}
+  .scd.up{color:var(--series)}
+  .scd.dn{color:var(--accent)}
+  .scd.eq{color:var(--faint)}
+  .sclists{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft)}
+  .sclists ul{max-height:260px;overflow-y:auto}
+
+  .scactions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+  .scbtn{font-family:var(--mono);font-size:.72rem;font-weight:600;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+  .scbtn:hover{border-color:var(--muted)}
+  .scbtn.warn{color:var(--accent)}
+  .scbtn.warn:hover{border-color:var(--accent)}
+  .screset{display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .screset > span:not([hidden]){display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .scq{font-size:.8rem;color:var(--ink)}
+  .scmsg{font-size:.8rem;color:var(--muted)}
+  .scbox{margin-bottom:12px}
+  .scbox .lab{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+  .scbox textarea{display:block;width:100%;font-family:var(--mono);font-size:.76rem;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;resize:vertical}
+  .scbox .scactions{margin:10px 0 0}
+  .sckey{margin:6px 0 0}
+  .sckey b{color:var(--ink);font-weight:600}
+
+  .scbulk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem;color:var(--muted);margin:-4px 0 4px}
+  .scbulk select{font-size:.8rem;padding:4px 8px}
+
+  .sctiles{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+  .sctile{box-shadow:none;gap:4px}
+  .sctile:hover{border-color:var(--line)}
+  .sctile.on{background:var(--cover-bg);box-shadow:var(--shadow)}
+  .sctile.open{border-style:dashed;border-left-style:solid}
+  .sctile .tn a{color:var(--ink);text-decoration:none}
+  .sctile .tn a:hover{color:var(--accent);text-decoration:underline}
+  .scid{font-family:var(--mono);font-size:.6rem;font-weight:500;color:var(--faint);margin-left:4px;white-space:nowrap}
+
+  .scseg{display:flex;flex-wrap:wrap;gap:2px;margin-top:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:2px;align-self:flex-start;max-width:100%}
+  .scseg input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+  .scseg label{font-family:var(--mono);font-size:.66rem;font-weight:600;color:var(--muted);padding:4px 8px;border-radius:5px;cursor:pointer;user-select:none;border:1px solid transparent}
+  .scseg label:hover{color:var(--ink);border-color:var(--line)}
+  .scseg input:checked + label{background:var(--surface);color:var(--ink);border-color:var(--line)}
+  .scseg input[value="shipped"]:checked + label{background:color-mix(in srgb,var(--series) 28%,var(--surface));border-color:color-mix(in srgb,var(--series) 45%,var(--line))}
+  .scseg input[value="configured"]:checked + label{background:color-mix(in srgb,var(--series) 58%,var(--surface));color:var(--ink);border-color:var(--series)}
+  .scseg input[value="observed"]:checked + label{background:var(--series);color:var(--series-ink);border-color:var(--series)}
+  .scseg input:focus-visible + label{outline:2px solid var(--focus);outline-offset:1px}
+
+  @media (max-width:900px){.scgrid{grid-template-columns:1fr}}
+  @media (max-width:560px){
+    .scfield,.scfield input,.scfield select{width:100%}
+    .scid-form{width:100%}
+    .scstats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+    .scstats .stat{padding:9px 9px}
+    .scstats .stat .n{font-size:1.25rem}
+    .scstats .stat .k{font-size:.7rem;line-height:1.3}
+    .scbrow{grid-template-columns:minmax(0,1fr) auto;gap:3px 10px}
+    .scbrow .bt{grid-column:1 / -1;grid-row:2}
+    .scseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-self:stretch}
+    .scseg label{text-align:center;padding:5px 2px;font-size:.62rem;overflow:hidden;text-overflow:ellipsis}
+  }

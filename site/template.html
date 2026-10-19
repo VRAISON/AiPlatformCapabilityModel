@@ -1,0 +1,535 @@
+<title>AI Platform Capability Model</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Layout: a sticky top bar with three views; the explorer drills from areas to capabilities to services,
+     compare shades the same landscape per platform, dashboard puts the platforms side by side. */
+  :root{
+    --ground:#EAEEF2; --surface:#FFFFFF; --surface-2:#F2F5F8; --ink:#101821; --muted:#57646F; --faint:#8996A2;
+    --line:#D3DBE3; --line-soft:#E3E9EE; --accent:#C2410C; --on-hue:#FFFFFF; --focus:#C2410C;
+    --a1:#3D6098; --a2:#2F8071; --a3:#8A5A2B; --a4:#8B3A62; --a5:#5B6B2E; --a6:#4B5A8F; --a7:#556170; --a8:#7A4F3A;
+    --series:#2a78d6; --series-ink:#FFFFFF; --cover-bg:#E2EBF4; --cover-line:#2a78d6; --miss-line:#C9D2DB; --open-line:#9AA5B1;
+    --seq1:#cde2fb; --seq2:#9ec5f4; --seq3:#6da7ec; --seq4:#3987e5; --seq5:#256abf; --seq6:#184f95; --seq7:#0d366b; --hostc:#6B4C9A;
+    --grid:#E3E9EE; --axis:#C3CCD5;
+    --display:"Archivo",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --shadow:0 1px 2px rgba(16,24,33,.05),0 6px 18px rgba(16,24,33,.05);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0D1218; --surface:#151C24; --surface-2:#1B242E; --ink:#E7ECF1; --muted:#98A5B1; --faint:#68757F;
+    --line:#28313C; --line-soft:#202832; --accent:#F97316; --on-hue:#0D1218; --focus:#F97316;
+    --a1:#6C93C9; --a2:#4FB9A5; --a3:#C79256; --a4:#C77299; --a5:#9BB05A; --a6:#8494C8; --a7:#8593A1; --a8:#C18A70;
+    --series:#3987e5; --series-ink:#FFFFFF; --cover-bg:#14202D; --cover-line:#3987e5; --miss-line:#2E3843; --open-line:#6B7682;
+    --seq1:#0d366b; --seq2:#184f95; --seq3:#256abf; --seq4:#3987e5; --seq5:#6da7ec; --seq6:#9ec5f4; --seq7:#cde2fb; --hostc:#C4B0E4;
+    --grid:#202832; --axis:#2E3843;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --ground:#0D1218; --surface:#151C24; --surface-2:#1B242E; --ink:#E7ECF1; --muted:#98A5B1; --faint:#68757F;
+    --line:#28313C; --line-soft:#202832; --accent:#F97316; --on-hue:#0D1218; --focus:#F97316;
+    --a1:#6C93C9; --a2:#4FB9A5; --a3:#C79256; --a4:#C77299; --a5:#9BB05A; --a6:#8494C8; --a7:#8593A1; --a8:#C18A70;
+    --series:#3987e5; --series-ink:#FFFFFF; --cover-bg:#14202D; --cover-line:#3987e5; --miss-line:#2E3843; --open-line:#6B7682;
+    --seq1:#0d366b; --seq2:#184f95; --seq3:#256abf; --seq4:#3987e5; --seq5:#6da7ec; --seq6:#9ec5f4; --seq7:#cde2fb; --hostc:#C4B0E4;
+    --grid:#202832; --axis:#2E3843;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ground)}
+  a{color:var(--accent)}
+  button{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .wrap{max-width:1500px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;text-wrap:balance;margin:0}
+  .mono{font-family:var(--mono)}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .lede{color:var(--muted);max-width:70ch;margin:8px 0 0}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* top bar */
+  .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--ground) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-soft)}
+  .top .wrap{display:flex;align-items:center;gap:10px;padding-block:10px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:1rem;color:var(--ink);text-decoration:none}
+  .brand .glyph{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#7c2d12);display:grid;place-items:center;color:#fff;font-size:.85rem}
+  .nav{display:flex;flex-wrap:wrap;gap:4px;margin-left:8px}
+  .nav a{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.04em;text-decoration:none;color:var(--muted);padding:6px 11px;border-radius:999px;border:1px solid transparent}
+  .nav a:hover{color:var(--ink)}
+  .nav a.on{color:var(--ink);background:var(--surface);border-color:var(--line)}
+  .top .spacer{flex:1}
+  .toggle{font-family:var(--mono);font-size:.7rem;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+  .toggle:hover{color:var(--ink);border-color:var(--muted)}
+
+  main.wrap{padding-block:24px 48px}
+  .head{display:flex;flex-wrap:wrap;align-items:end;gap:14px 24px;margin-bottom:18px}
+  .head h1{font-size:clamp(1.5rem,3.6vw,2.2rem);line-height:1.08}
+  .head .grow{flex:1;min-width:260px}
+  .crumbs{display:flex;flex-wrap:wrap;gap:4px 6px;font-family:var(--mono);font-size:.72rem;color:var(--faint);margin-bottom:8px}
+  .crumbs a{color:var(--muted);text-decoration:none}
+  .crumbs a:hover{color:var(--accent)}
+  .crumbs span.sep{opacity:.6}
+
+  /* controls */
+  .head > div{min-width:0;max-width:100%}
+  .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;min-width:0;max-width:100%}
+  .seg{display:inline-flex;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;max-width:100%}
+  .seg a{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--muted);text-decoration:none;padding:5px 12px;border-radius:999px}
+  .seg a.on{background:var(--ink);color:var(--ground)}
+  .search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;min-width:220px}
+  .search input{border:0;background:transparent;font:inherit;font-size:.86rem;color:var(--ink);outline:0;width:100%;min-width:0}
+  .search input::placeholder{color:var(--faint)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:2px 7px;text-decoration:none}
+  /* generated icons: one per area and capability, white glyph on the area hue */
+  .ico{display:block;flex:none;width:28px;height:28px;border-radius:7px;object-fit:cover;background:var(--surface-2)}
+  .ico.lg{width:48px;height:48px;border-radius:12px}
+  .ico.sm{width:22px;height:22px;border-radius:6px}
+  .ico.xs{width:16px;height:16px;border-radius:4px}
+  .chip .ico{width:14px;height:14px;border-radius:3px}
+  .hrow{display:flex;align-items:center;gap:14px}
+  .hrow .ico{margin-top:2px}
+  .chip:hover{color:var(--ink);border-color:var(--muted)}
+  .chip.cur{color:var(--ink);border-color:var(--ink)}
+
+  /* level 1 cards */
+  .areas{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .acard{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;overflow:hidden;text-decoration:none;color:inherit}
+  .acard .bar{height:6px}
+  .acard .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .acard .ahd{display:flex;align-items:center;gap:12px}
+  .acard .ahd > div{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .acard .id{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.08em;color:var(--faint)}
+  .acard h2{font-size:1.1rem;line-height:1.15}
+  .acard p{margin:0;color:var(--muted);font-size:.86rem}
+  .acard .counts{font-family:var(--mono);font-size:.68rem;color:var(--faint);margin-top:auto;padding-top:4px}
+  .acard .counts b{color:var(--muted);font-weight:600}
+
+  /* sections and tiles */
+  .asec{margin-top:28px}
+  .ahead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 12px;border-radius:9px;color:var(--on-hue);margin-bottom:12px}
+  .ahead .an{font-family:var(--mono);font-weight:600;font-size:.66rem;letter-spacing:.08em;opacity:.85}
+  .ahead h2{font-size:1.05rem}
+  .ahead a{color:inherit;text-decoration:none}
+  .ahead .ct{font-family:var(--mono);font-size:.66rem;opacity:.85;margin-left:auto}
+  .caps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .ccard{background:var(--surface);border:1px solid var(--line);border-left-width:3px;border-radius:9px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+  .ccard h3{font-size:.98rem;display:flex;align-items:center;gap:8px}
+  .ccard h3 a{color:inherit;text-decoration:none}
+  .ccard h3 a:hover{color:var(--accent)}
+  .ccard p{margin:0;color:var(--muted);font-size:.84rem}
+  .ccard .svcs{display:flex;flex-wrap:wrap;gap:5px}
+  .csec{margin-top:16px}
+  .chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .chead h3{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+  .chead h3 a{color:inherit;text-decoration:none}
+  .chead p{margin:0;color:var(--faint);font-size:.8rem}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .tile{background:var(--surface);border:1px solid var(--line);border-left-width:3px;border-radius:7px;padding:9px 10px;box-shadow:var(--shadow);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:3px;min-width:0;position:relative}
+  .tile:hover{border-color:var(--muted)}
+  .tile .tn{font-weight:600;font-size:.84rem;line-height:1.2}
+  .tile .tm{font-family:var(--mono);font-size:.64rem;color:var(--faint);line-height:1.3}
+  .tile .tm b{color:var(--muted);font-weight:600}
+  .tile .td{font-size:.78rem;color:var(--muted);line-height:1.35}
+
+  /* full landscape (level 3) */
+  .land{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:9px;min-width:0}
+  .col .ahead{border-radius:9px 9px 0 0;margin-bottom:0;flex-direction:column;align-items:flex-start;gap:2px}
+  .col .ahead h2{font-size:.9rem;line-height:1.15}
+  .col .ahead .ico{margin-bottom:4px}
+  .col .ahead .ct{margin-left:0}
+  .dom{display:flex;flex-direction:column;gap:6px}
+  .dhead{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:2px 2px 0;display:flex;align-items:center;gap:6px}
+  .dhead a{color:inherit;text-decoration:none}
+  .land .tile .tn{font-size:.79rem}
+  .land .tile .td{display:none}
+  .land.cmp .tile{border-left-color:var(--miss-line);color:var(--muted);box-shadow:none}
+  .land.cmp .tile .tn{color:var(--muted);font-weight:500}
+  .land.cmp .tile.cov{background:var(--cover-bg);border-color:var(--line);border-left-color:var(--cover-line);box-shadow:var(--shadow)}
+  .land.cmp .tile.cov .tn{color:var(--ink);font-weight:600}
+  .land.cmp .tile.cov::after{content:"";position:absolute;top:9px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--cover-line)}
+  .land.cmp .tile.open{border-style:dashed;border-left-style:solid;border-left-color:var(--open-line)}
+
+  /* service page */
+  .svc{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:18px;align-items:start}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;box-shadow:var(--shadow);min-width:0}
+  .panel h1{font-size:clamp(1.4rem,3vw,2rem)}
+  .panel .meta{font-family:var(--mono);font-size:.74rem;color:var(--faint);margin:8px 0 14px}
+  .panel .meta b{color:var(--muted);font-weight:600}
+  .panel p.desc{font-size:1.05rem;margin:0;max-width:60ch}
+  .panel .lab{font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+  .side{display:flex;flex-direction:column;gap:12px}
+  .side .panel{padding:14px 16px}
+  .side p{margin:0;font-size:.86rem;color:var(--muted)}
+  .scope{font-size:.8rem;color:var(--faint);margin:0}
+  .scope b{color:var(--muted);font-weight:600}
+  .owner{font-family:var(--mono);font-size:.66rem;color:var(--faint);margin:0}
+  .owner b{color:var(--muted);font-weight:600}
+  .lede .scope{display:block;margin-top:8px;max-width:84ch}
+  /* service page sections, following the architectural service domain template */
+  .sec{margin-top:22px;padding-top:16px;border-top:1px solid var(--line-soft)}
+  .sec .lab{margin-bottom:10px}
+  .sec .lab .num{display:inline-block;min-width:18px;color:var(--accent);margin-right:4px}
+  .ov{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.9rem}
+  .ov dt{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding-top:3px;white-space:nowrap}
+  .ov dd{margin:0;color:var(--ink);min-width:0;max-width:70ch}
+  .ov dd .ex{display:block;color:var(--muted);margin-top:3px}
+  .fl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:.9rem;max-width:72ch}
+  .fl li{display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:12px;align-items:start}
+  .fl li b{font-weight:600;color:var(--ink)}
+  .fl li span{color:var(--muted)}
+  .ifc{width:100%;border-collapse:collapse;font-size:.84rem}
+  .ifc th{font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);text-align:left;padding:4px 8px 6px 0;border-bottom:1px solid var(--line)}
+  .ifc td{padding:6px 8px 6px 0;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--muted)}
+  .ifc td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  .ifc td a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+  .ifc td a:hover{color:var(--accent);border-color:var(--accent)}
+  .ifc td .mech{font-family:var(--mono);font-size:.7rem;color:var(--faint);white-space:nowrap}
+  .ifc td .actor{color:var(--muted);font-weight:500;font-style:italic}
+  .ifc .arrow{color:var(--faint);padding-inline:6px}
+  .ifwrap{overflow-x:auto}
+  .ifh{font-size:.8rem;color:var(--muted);margin:10px 0 6px}
+  .pn{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .pn a{font-size:.84rem;text-decoration:none;color:var(--muted)}
+  .pn a:hover{color:var(--accent)}
+
+  /* compare */
+  .ptabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+  .ptab{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;text-decoration:none;color:var(--muted);font-size:.84rem}
+  .ptab .pc{font-family:var(--mono);font-size:.66rem;font-weight:600;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:1px 7px;color:var(--ink)}
+  .ptab.on{border-color:var(--ink);color:var(--ink)}
+  .ptab.on .pc{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+  .ident{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;margin-bottom:18px}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:.84rem;margin-top:10px}
+  .kv dt{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+  .kv dd{margin:0;color:var(--ink);min-width:0;overflow-wrap:anywhere}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
+  .stat .n{font-family:var(--body);font-weight:600;font-size:1.7rem;line-height:1}
+  .stat .k{font-size:.74rem;color:var(--muted);margin-top:5px}
+  .stat .src{font-family:var(--mono);font-size:.62rem;color:var(--faint);margin-top:4px}
+  .bars{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .brow{display:grid;grid-template-columns:minmax(120px,160px) 1fr auto;gap:10px;align-items:center;font-size:.82rem}
+  .brow .bl{color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brow .bt{height:10px;background:var(--surface-2);border-radius:4px;overflow:hidden;position:relative}
+  .brow .bf{position:absolute;inset:0 auto 0 0;background:var(--series);border-radius:0 4px 4px 0}
+  .brow .bv{font-family:var(--mono);font-size:.7rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lists{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+  .lists ul{margin:8px 0 0;padding-left:18px;font-size:.86rem;color:var(--muted)}
+  .lists li{margin-bottom:3px}
+  .lists li a{color:var(--ink);text-decoration:none}
+  .lists li a:hover{color:var(--accent)}
+  .lists .h{font-family:var(--mono);font-size:.68rem;color:var(--faint)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.76rem;color:var(--muted);margin:14px 0 10px}
+  .legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid var(--line)}
+  .legend .sw.cov{background:var(--cover-bg);border-left:3px solid var(--cover-line)}
+  .legend .sw.miss{background:var(--surface);border-left:3px solid var(--miss-line)}
+  .legend .sw.open{background:transparent;border-style:dashed;border-color:var(--open-line)}
+
+  /* dashboard */
+  .dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+  .drow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-bottom:18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:var(--shadow);min-width:0}
+  .card h2{font-size:1rem;margin-bottom:2px}
+  .card .sub{font-size:.8rem;color:var(--muted);margin:0 0 12px}
+  .hbars{display:flex;flex-direction:column;gap:7px}
+  .hbar{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;font-size:.82rem}
+  .hbar .l{color:var(--ink);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbar .l small{font-family:var(--mono);font-size:.64rem;color:var(--faint);margin-left:4px}
+  .hbar .t{position:relative;height:14px}
+  .hbar .f{position:absolute;left:0;top:2px;bottom:2px;background:var(--series);border-radius:0 4px 4px 0;min-width:2px}
+  .hbar .v{position:absolute;top:-2px;font-family:var(--mono);font-size:.7rem;color:var(--muted);font-variant-numeric:tabular-nums;padding-left:6px;white-space:nowrap}
+  .hbar .t::before{content:"";position:absolute;left:0;top:0;bottom:0;border-left:1px solid var(--axis)}
+  .hm{width:100%;border-collapse:separate;border-spacing:2px;font-size:.78rem;table-layout:fixed}
+  .hm th{font-family:var(--mono);font-size:.64rem;font-weight:600;color:var(--muted);text-align:left;padding:2px 4px;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hm th.r{text-align:center}
+  .hm td{height:34px;text-align:center;border-radius:4px;font-family:var(--mono);font-size:.7rem;font-variant-numeric:tabular-nums}
+  .ramp{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.64rem;color:var(--faint);margin-top:8px}
+  .ramp .r{flex:0 0 120px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--seq1),var(--seq4),var(--seq7))}
+  .stack{display:flex;height:14px;border-radius:4px;overflow:hidden;gap:2px;margin-top:6px}
+  .stack div{min-width:2px}
+  .skey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.76rem;color:var(--muted);margin-top:8px}
+  .skey .sw{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+  .filters{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 12px}
+  .filters label{font-size:.8rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+  .filters select{font:inherit;font-size:.8rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+  .mwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+  .mx{border-collapse:collapse;min-width:760px;width:100%;font-size:.8rem}
+  .mx th{position:sticky;top:0;background:var(--surface);z-index:1;font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.04em;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  .mx th.c{text-align:center;width:48px}
+  .mx td{padding:5px 10px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  .mx td.c{text-align:center}
+  .mx tr.grp td{background:var(--surface-2);font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:7px 10px}
+  .mx tr.grp td .ab{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:8px;vertical-align:-1px}
+  .mx td.nm a{color:var(--ink);text-decoration:none}
+  .mx td.nm a:hover{color:var(--accent)}
+  .mx td.nm small{display:block;font-family:var(--mono);font-size:.62rem;color:var(--faint)}
+  .mx .dot{display:inline-block;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--miss-line)}
+  .mx .dot.on{background:var(--series);border-color:var(--series)}
+  .mx tr.hl td{background:var(--cover-bg)}
+  .mx td.tot{font-family:var(--mono);font-size:.7rem;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+  .mx tr.open td.nm a{color:var(--muted)}
+  .pv{font-family:var(--mono);font-size:.62rem;font-weight:600;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted)}
+  .pv.open{border-style:dashed}
+
+  .tip{position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--ground);font-size:.76rem;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:var(--shadow)}
+  .tip b{font-weight:600}
+  footer{color:var(--faint);font-size:.74rem;margin-top:36px;border-top:1px solid var(--line-soft);padding-top:14px}
+  footer p{margin:0 0 4px}
+  .empty{color:var(--muted);font-size:.9rem;padding:24px 0}
+
+  @media (max-width:1320px){.land{grid-template-columns:repeat(4,1fr)}.areas{grid-template-columns:repeat(2,1fr)}.tiles{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:900px){.svc,.ident,.drow,.lists,.caps{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}.dgrid{grid-template-columns:repeat(2,1fr)}.land{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.land,.tiles,.areas,.stats{grid-template-columns:1fr}.hbar{grid-template-columns:96px 1fr}.nav{margin-left:0}.brow{grid-template-columns:90px 1fr auto}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/*__VIEW_CSS__*/
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#explorer"><span class="glyph">P</span>AI Platform Capability Model</a>
+    <nav class="nav" id="nav">
+      <a href="#explorer" data-view="explorer">Explorer</a>
+      <a href="#compare" data-view="compare">Compare</a>
+      <a href="#dashboard" data-view="dashboard">Dashboard</a>
+    </nav>
+    <div class="spacer"></div>
+    <button class="toggle" id="themeBtn" type="button">theme</button>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<script>
+/*__DATA__*/
+
+(function(){
+  // ---------- indexes ----------
+  var AREAS=DATA.areas, PLATFORMS=DATA.platforms;
+  var SERVICES=[], CAPS=[], byArea={}, byCap={}, bySvc={}, byPlat={};
+  AREAS.forEach(function(a){byArea[a.id]=a;a.capabilities.forEach(function(c){c.area=a;c.key=a.id+'-'+c.slug;byCap[c.key]=c;CAPS.push(c);c.services.forEach(function(s){s.area=a;s.cap=c;bySvc[s.slug]=s;SERVICES.push(s);});});});
+  PLATFORMS.forEach(function(p){byPlat[p.code]=p;});
+  var TOTAL=SERVICES.length, OPEN=SERVICES.filter(function(s){return s.prevalence==='open';}).length, EVID=TOTAL-OPEN;
+  var PREV={wide:'Wide',mixed:'Mixed',rare:'Rare',host:'Host',open:'Open'};
+  function covers(s,code){return s.platforms.indexOf(code)>=0;}
+  function countFor(code,list){return (list||SERVICES).filter(function(s){return covers(s,code);}).length;}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hue(a){return 'var(--a'+a.hue+')';}
+  function ico(x,cls){return x&&x.icon?'<img class="ico '+(cls||'')+'" src="'+x.icon+'" alt="" loading="lazy">':'';}
+
+  // ---------- theme ----------
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  function cur(){var t=root.getAttribute('data-theme');if(t)return t;return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+  try{var st=localStorage.getItem('cm-theme');if(st)root.setAttribute('data-theme',st);}catch(e){}
+  btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';root.setAttribute('data-theme',n);try{localStorage.setItem('cm-theme',n);}catch(e){}render();});
+  if(window.matchMedia){try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){render();});}catch(e){}}
+
+  // ---------- tooltip ----------
+  var tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+  document.addEventListener('mouseover',function(e){var t=e.target.closest('[data-tip]');if(!t){tip.hidden=true;return;}tip.innerHTML=t.getAttribute('data-tip');tip.hidden=false;});
+  document.addEventListener('mousemove',function(e){if(tip.hidden)return;var x=e.clientX+14,y=e.clientY+14;var w=tip.offsetWidth,h=tip.offsetHeight;if(x+w>innerWidth-8)x=e.clientX-w-10;if(y+h>innerHeight-8)y=e.clientY-h-10;tip.style.left=x+'px';tip.style.top=y+'px';});
+  document.addEventListener('mouseout',function(e){if(e.target.closest&&e.target.closest('[data-tip]'))tip.hidden=true;});
+
+  // ---------- routing ----------
+  var app=document.getElementById('app');
+  function route(){var h=(location.hash||'#explorer').slice(1);return h;}
+  function nav(view){document.querySelectorAll('#nav a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-view')===view);});}
+  window.addEventListener('hashchange',function(){render();window.scrollTo(0,0);});
+
+  // Registered views (site/views/*.js) are tried first; each is {re, view(match), nav}.
+  var ROUTES=[];
+  function render(){
+    var h=route(), m;
+    for(var r=0;r<ROUTES.length;r++){m=h.match(ROUTES[r].re);if(m){nav(ROUTES[r].nav);app.innerHTML=ROUTES[r].view(m);if(ROUTES[r].after)ROUTES[r].after(m);wireSearch();return;}}
+    if(h==='explorer'||h==='l1'||h===''){nav('explorer');app.innerHTML=viewL1();}
+    else if(h==='l2'){nav('explorer');app.innerHTML=viewL2();}
+    else if(h==='l3'){nav('explorer');app.innerHTML=viewL3();}
+    else if((m=h.match(/^area-(BA\d)$/))&&byArea[m[1]]){nav('explorer');app.innerHTML=viewArea(byArea[m[1]]);}
+    else if((m=h.match(/^cap-(BA\d)-(.+)$/))&&byCap[m[1]+'-'+m[2]]){nav('explorer');app.innerHTML=viewCap(byCap[m[1]+'-'+m[2]]);}
+    else if((m=h.match(/^svc-(.+)$/))&&bySvc[m[1]]){nav('explorer');app.innerHTML=viewSvc(bySvc[m[1]]);}
+    else if(h==='compare'){nav('compare');app.innerHTML=viewCompare(PLATFORMS[0]);}
+    else if((m=h.match(/^compare-(\w\w)$/))&&byPlat[m[1]]){nav('compare');app.innerHTML=viewCompare(byPlat[m[1]]);}
+    else if(h==='dashboard'){nav('dashboard');app.innerHTML=viewDash(null);wireDash();}
+    else if((m=h.match(/^dash-(.+)$/))&&bySvc[m[1]]){nav('dashboard');app.innerHTML=viewDash(bySvc[m[1]]);wireDash();var row=document.getElementById('row-'+m[1]);if(row)row.scrollIntoView({block:'center'});}
+    else {nav('explorer');app.innerHTML=viewL1();}
+    wireSearch();
+  }
+
+  // ---------- shared fragments ----------
+  function levelBar(level){
+    return '<div class="seg" role="tablist">'+
+      '<a href="#l1" class="'+(level===1?'on':'')+'">Areas · '+AREAS.length+'</a>'+
+      '<a href="#l2" class="'+(level===2?'on':'')+'">Capabilities · '+CAPS.length+'</a>'+
+      '<a href="#l3" class="'+(level===3?'on':'')+'">Services · '+TOTAL+'</a></div>';
+  }
+  function searchBox(){return '<div class="search"><span class="mono" style="color:var(--faint);font-size:.7rem">find</span><input id="q" type="search" placeholder="Search services, patterns, assets" autocomplete="off" aria-label="Search services"></div>';}
+  function crumbs(parts){return '<div class="crumbs">'+parts.map(function(p,i){return (i?'<span class="sep">/</span>':'')+(p.href?'<a href="'+p.href+'">'+esc(p.text)+'</a>':'<span>'+esc(p.text)+'</span>');}).join('')+'</div>';}
+  function tile(s,extra){
+    return '<a class="tile '+(extra||'')+'" href="#svc-'+s.slug+'" style="border-left-color:'+(extra?'':hue(s.area))+'">'+
+      '<div class="tn">'+esc(s.name)+'</div><div class="tm"><b>'+esc(s.pattern)+'</b> · '+esc(s.asset)+'</div><div class="td">'+esc(s.description)+'</div></a>';
+  }
+  function areaHead(a,link){return '<div class="ahead" style="background:'+hue(a)+'">'+ico(a,'sm')+'<span class="an">'+a.id+'</span><h2>'+(link?'<a href="#area-'+a.id+'">'+esc(a.name)+'</a>':esc(a.name))+'</h2><span class="ct">'+a.capabilities.length+' capabilities · '+a.capabilities.reduce(function(n,c){return n+c.services.length;},0)+' services</span></div>';}
+  function foot(){return '<footer><p class="mono">AI Platform Capability Model '+DATA.version+' · '+DATA.generated+' · 3 tiers: Capability Area, Capability, Service · each service is one functional pattern on one asset.</p><p>Platform coverage is read from nine homes on one machine and the runtimes\' documented protocols and flags. The explorer is product-neutral; platforms appear only under Compare and Dashboard.</p></footer>';}
+  function header(title,lede,right,node){var top='<div class="eyebrow">Capability model · '+DATA.version+'</div><h1>'+title+'</h1>';if(node&&node.icon)top='<div class="hrow">'+ico(node,'lg')+'<div>'+top+'</div></div>';return '<div class="head"><div class="grow">'+top+(lede?'<p class="lede">'+lede+'</p>':'')+'</div>'+(right||'')+'</div>';}
+
+  // ---------- explorer views ----------
+  function viewL1(){
+    return header('The capability landscape for an AI agent platform.','Eight <b>capability areas</b>, each stated as an ability the platform owns end to end, with what it includes and what it leaves to a neighbor. Open one to see its capabilities and the services that deliver them.','<div class="ctl">'+levelBar(1)+searchBox()+'</div>')+
+      '<div id="results"></div><div class="areas" id="main">'+AREAS.map(function(a){
+        var ns=a.capabilities.reduce(function(n,c){return n+c.services.length;},0);
+        return '<a class="acard" href="#area-'+a.id+'"><div class="bar" style="background:'+hue(a)+'"></div><div class="body"><div class="ahd">'+ico(a,'lg')+'<div><span class="id">'+a.id+'</span><h2>'+esc(a.name)+'</h2></div></div><p>'+esc(a.description)+'</p>'+(a.scope?'<p class="scope">'+esc(a.scope)+'</p>':'')+'<div class="chips">'+a.capabilities.map(function(c){return '<span class="chip">'+ico(c)+esc(c.name)+'</span>';}).join('')+'</div><div class="counts"><b>'+a.capabilities.length+'</b> capabilities · <b>'+ns+'</b> services</div></div></a>';
+      }).join('')+'</div>'+foot();
+  }
+  function viewL2(){
+    return header('Capabilities, grouped by area.','Twenty-five <b>capabilities</b>, each an ability the platform must have inside its area, with its scope, the role that owns it, and the services that deliver it.','<div class="ctl">'+levelBar(2)+searchBox()+'</div>')+
+      '<div id="results"></div><div id="main">'+AREAS.map(function(a){
+        return '<section class="asec">'+areaHead(a,true)+'<div class="caps">'+a.capabilities.map(function(c){
+          return '<div class="ccard" style="border-left-color:'+hue(a)+'"><h3>'+ico(c,'sm')+'<a href="#cap-'+c.key+'">'+esc(c.name)+'</a></h3><p>'+esc(c.description)+'</p>'+(c.scope?'<p class="scope">'+esc(c.scope)+'</p>':'')+(c.owner?'<p class="owner">Owner · <b>'+esc(c.owner)+'</b></p>':'')+'<div class="svcs">'+c.services.map(function(s){return '<a class="chip" href="#svc-'+s.slug+'">'+esc(s.name)+'</a>';}).join('')+'</div></div>';
+        }).join('')+'</div></section>';
+      }).join('')+'</div>'+foot();
+  }
+  function landscape(cls,tileFn){
+    return '<div class="land '+(cls||'')+'">'+AREAS.map(function(a){
+      return '<div class="col">'+areaHead(a,true)+a.capabilities.map(function(c){
+        return '<div class="dom"><div class="dhead">'+ico(c,'xs')+'<a href="#cap-'+c.key+'">'+esc(c.name)+'</a></div>'+c.services.map(tileFn||function(s){return tile(s);}).join('')+'</div>';
+      }).join('')+'</div>';
+    }).join('')+'</div>';
+  }
+  function viewL3(){
+    return header('Every service on one map.','All '+TOTAL+' <b>services</b> in their areas and capabilities. A service is one functional pattern on one asset; open a tile for its definition.','<div class="ctl">'+levelBar(3)+searchBox()+'</div>')+
+      '<div id="results"></div><div id="main">'+landscape('')+'</div>'+foot();
+  }
+  function viewArea(a){
+    var ns=a.capabilities.reduce(function(n,c){return n+c.services.length;},0);
+    return crumbs([{text:'Areas',href:'#l1'},{text:a.id+' '+a.name}])+
+      header(esc(a.name),esc(a.description)+' <b>'+a.capabilities.length+' capabilities, '+ns+' services.</b>'+(a.scope?'<span class="scope">'+esc(a.scope)+'</span>':''),searchBox(),a)+
+      '<div id="results"></div><div id="main">'+a.capabilities.map(function(c){
+        return '<section class="csec"><div class="chead"><h3>'+ico(c,'xs')+'<a href="#cap-'+c.key+'">'+esc(c.name)+'</a></h3><p>'+esc(c.description)+(c.owner?' <span class="mono" style="font-size:.66rem">· '+esc(c.owner)+'</span>':'')+'</p></div><div class="tiles">'+c.services.map(function(s){return tile(s);}).join('')+'</div></section>';
+      }).join('')+'</div><div class="pn">'+areaPrevNext(a)+'</div>'+foot();
+  }
+  function areaPrevNext(a){var i=AREAS.indexOf(a),p=AREAS[i-1],n=AREAS[i+1];return (p?'<a href="#area-'+p.id+'">← '+esc(p.name)+'</a>':'<span></span>')+(n?'<a href="#area-'+n.id+'">'+esc(n.name)+' →</a>':'');}
+  function viewCap(c){
+    var a=c.area;
+    return crumbs([{text:'Areas',href:'#l1'},{text:a.name,href:'#area-'+a.id},{text:c.name}])+
+      header(esc(c.name),esc(c.description)+' <b>'+c.services.length+' services.</b>'+(c.scope?'<span class="scope">'+esc(c.scope)+(c.owner?' <b>Owner: '+esc(c.owner)+'.</b>':'')+'</span>':''),'',c)+
+      '<div id="main"><div class="tiles">'+c.services.map(function(s){return tile(s);}).join('')+'</div></div>'+
+      '<div class="chips" style="margin-top:18px">'+a.capabilities.map(function(x){return '<a class="chip '+(x===c?'cur':'')+'" href="#cap-'+x.key+'">'+ico(x)+esc(x.name)+'</a>';}).join('')+'</div>'+foot();
+  }
+  var byName={};SERVICES.forEach(function(s){byName[s.name]=s;});
+  function refLink(name){var t=byName[name];return t?'<a href="#svc-'+t.slug+'">'+esc(name)+'</a>':'<span class="actor">'+esc(name)+'</span>';}
+  function ifcTable(rows,kind){
+    var inb=kind==='in';
+    return '<div class="ifwrap"><table class="ifc"><thead><tr><th>'+(inb?'Source':'Target')+'</th><th></th><th>Mechanism</th><th></th><th>'+(inb?'Purpose':'Data or trigger')+'</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr><td>'+refLink(r[0])+'</td><td class="arrow">'+(inb?'→':'←')+'</td><td><span class="mech">'+esc(r[1])+'</span></td><td class="arrow">'+(inb?'→':'←')+'</td><td>'+esc(r[2])+'</td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  function viewSvc(s){
+    var a=s.area,c=s.cap,i=SERVICES.indexOf(s),p=SERVICES[i-1],n=SERVICES[i+1],pr=s.profile;
+    var usedBy=SERVICES.filter(function(x){return x!==s&&(x.profile.outbound||[]).some(function(r){return r[0]===s.name;});});
+    var feeds=SERVICES.filter(function(x){return x!==s&&(x.profile.inbound||[]).some(function(r){return r[0]===s.name;});});
+    return crumbs([{text:'Areas',href:'#l1'},{text:a.name,href:'#area-'+a.id},{text:c.name,href:'#cap-'+c.key},{text:s.name}])+
+      '<div class="svc"><div class="panel" style="border-top:4px solid '+hue(a)+'"><div class="eyebrow">Service · '+a.id+' · '+esc(c.name)+'</div><h1 style="margin-top:6px">'+esc(s.name)+'</h1>'+
+      '<div class="meta"><b>'+esc(s.pattern)+'</b> · '+esc(s.asset)+'</div><p class="desc">'+esc(s.description)+'</p>'+
+      '<div class="sec"><p class="lab"><span class="num">1</span>Domain overview</p><dl class="ov">'+
+        '<dt>Domain name</dt><dd>'+esc(s.name)+' <span class="mono" style="font-size:.72rem;color:var(--faint)">('+esc(s.pattern)+' · '+esc(s.asset)+')</span></dd>'+
+        '<dt>Domain owner</dt><dd>'+esc(c.owner||'')+'</dd>'+
+        '<dt>Bounded context</dt><dd>'+esc(pr.inside)+'<span class="ex"><b style="color:var(--ink);font-weight:600">Excludes:</b> '+esc(pr.excludes)+'</span></dd>'+
+        '<dt>Business purpose</dt><dd>'+esc(pr.purpose)+'</dd></dl></div>'+
+      '<div class="sec"><p class="lab"><span class="num">2</span>Functional capabilities &amp; services</p><ul class="fl">'+pr.functions.map(function(f){return '<li><b>'+esc(f[0])+'</b><span>'+esc(f[1])+'</span></li>';}).join('')+'</ul></div>'+
+      '<div class="sec"><p class="lab"><span class="num">3</span>Core domain entities</p><ul class="fl">'+pr.entities.map(function(e){return '<li><b>'+esc(e[0])+'</b><span>'+esc(e[1])+'</span></li>';}).join('')+'</ul></div>'+
+      '<div class="sec"><p class="lab"><span class="num">4</span>Integration &amp; interfaces</p>'+
+        '<p class="ifh">Inbound, consumed by this service</p>'+ifcTable(pr.inbound,'in')+
+        '<p class="ifh">Outbound, exposed to others</p>'+ifcTable(pr.outbound,'out')+'</div>'+
+      '<div class="sec"><p class="lab"><span class="num">5</span>Architectural quality constraints</p><dl class="ov">'+
+        '<dt>Security &amp; compliance</dt><dd>'+esc(pr.security)+'</dd>'+
+        '<dt>Data residency &amp; storage</dt><dd>'+esc(pr.storage)+'</dd>'+
+        '<dt>Performance</dt><dd>'+esc(pr.performance)+'</dd></dl></div>'+
+      '<div class="sec"><p class="lab">Reading the pair</p><p style="margin:0;color:var(--muted);font-size:.9rem;max-width:60ch">The pattern <b style="color:var(--ink)">'+esc(s.pattern)+'</b> says what is done. The asset <b style="color:var(--ink)">'+esc(s.asset)+'</b> says what it is done to. No other service in the model applies this pattern to this asset.</p></div>'+
+      '<div class="pn">'+(p?'<a href="#svc-'+p.slug+'">← '+esc(p.name)+'</a>':'<span></span>')+(n?'<a href="#svc-'+n.slug+'">'+esc(n.name)+' →</a>':'')+'</div></div>'+
+      '<div class="side"><div class="panel"><p class="lab">Capability</p><p style="display:flex;gap:10px;align-items:flex-start">'+ico(c,'sm')+'<span><a href="#cap-'+c.key+'" style="color:var(--ink);text-decoration:none;font-weight:600">'+esc(c.name)+'</a><br>'+esc(c.description)+'</span></p></div>'+
+      '<div class="panel"><p class="lab">Sibling services</p><div class="chips">'+c.services.map(function(x){return '<a class="chip '+(x===s?'cur':'')+'" href="#svc-'+x.slug+'">'+esc(x.name)+'</a>';}).join('')+'</div></div>'+
+      (usedBy.length?'<div class="panel"><p class="lab">Named as a target by</p><div class="chips">'+usedBy.map(function(x){return '<a class="chip" href="#svc-'+x.slug+'">'+esc(x.name)+'</a>';}).join('')+'</div></div>':'')+
+      (feeds.length?'<div class="panel"><p class="lab">Named as a source by</p><div class="chips">'+feeds.map(function(x){return '<a class="chip" href="#svc-'+x.slug+'">'+esc(x.name)+'</a>';}).join('')+'</div></div>':'')+
+      '<div class="panel"><p class="lab">Platforms</p><p>The explorer stays product-neutral. <a href="#dash-'+s.slug+'">See which platforms evidence this service</a> on the dashboard.</p></div>'+
+      '<div class="panel"><p class="lab">Dependency graph</p><p><a href="#graph-'+s.slug+'">Show this service in the graph</a> with its '+(pr.inbound.length+pr.outbound.length)+' named interfaces.</p></div></div></div>'+foot();
+  }
+
+  // ---------- search ----------
+  function wireSearch(){
+    var q=document.getElementById('q'),res=document.getElementById('results'),main=document.getElementById('main');
+    if(!q||!res)return;
+    q.addEventListener('input',function(){
+      var v=q.value.trim().toLowerCase();
+      if(!v){res.innerHTML='';if(main)main.hidden=false;return;}
+      var hits=SERVICES.filter(function(s){return (s.name+' '+s.pattern+' '+s.asset+' '+s.description+' '+s.cap.name+' '+s.area.name).toLowerCase().indexOf(v)>=0;});
+      if(main)main.hidden=true;
+      res.innerHTML=hits.length?'<p class="mono" style="font-size:.7rem;color:var(--faint);margin:0 0 10px">'+hits.length+' of '+TOTAL+' services</p><div class="tiles">'+hits.map(function(s){return tile(s);}).join('')+'</div>':'<p class="empty">No service matches "'+esc(q.value)+'". Try a pattern such as Register or an asset such as Session.</p>';
+    });
+  }
+
+  // ---------- compare ----------
+  function viewCompare(p){
+    var n=countFor(p.code), pct=Math.round(100*n/EVID);
+    var areasTouched=AREAS.filter(function(a){return a.capabilities.some(function(c){return c.services.some(function(s){return covers(s,p.code);});});}).length;
+    var only=SERVICES.filter(function(s){return s.platforms.length===1&&covers(s,p.code);});
+    var absent=SERVICES.filter(function(s){return s.platforms.length>=4&&!covers(s,p.code);});
+    return header('How <span style="white-space:nowrap">'+esc(p.name)+'</span> compares to the landscape.','Each platform is shaded onto the same '+TOTAL+' services. A shaded tile means the home or its documented protocol evidences the service on this machine; an unshaded tile means it does not. Dashed tiles are open for every platform.')+
+      '<div class="ptabs">'+PLATFORMS.map(function(x){return '<a class="ptab '+(x===p?'on':'')+'" href="#compare-'+x.code+'"><span class="pc">'+x.code+'</span>'+esc(x.name)+'</a>';}).join('')+'</div>'+
+      '<div class="ident"><div class="panel"><div class="eyebrow">'+esc(p.kind==='host'?'Model host':'Agent client')+' · '+esc(p.vendor)+'</div><h2 style="font-size:1.3rem;margin-top:4px">'+esc(p.name)+'</h2><p style="margin:8px 0 0;color:var(--muted);font-size:.9rem;max-width:60ch">'+esc(p.note)+'</p>'+
+      '<dl class="kv"><dt>Home</dt><dd class="mono" style="font-size:.78rem">'+esc(p.home)+'</dd><dt>Version</dt><dd>'+esc(p.version)+'</dd><dt>Sign-in</dt><dd>'+esc(p.auth)+'</dd><dt>Model</dt><dd>'+esc(p.model)+'</dd></dl></div>'+
+      '<div><div class="stats"><div class="stat"><div class="n">'+n+'</div><div class="k">services evidenced</div><div class="src">of '+EVID+' with any evidence</div></div><div class="stat"><div class="n">'+pct+'%</div><div class="k">of the evidenced landscape</div><div class="src">'+OPEN+' open services excluded</div></div><div class="stat"><div class="n">'+areasTouched+'</div><div class="k">of '+AREAS.length+' areas touched</div><div class="src">any service in the area</div></div></div>'+
+      '<div class="panel" style="margin-top:10px"><p class="lab">Coverage by area</p><div class="bars">'+AREAS.map(function(a){var list=[];a.capabilities.forEach(function(c){list=list.concat(c.services.filter(function(s){return s.prevalence!=='open';}));});var k=countFor(p.code,list);return '<div class="brow" data-tip="<b>'+esc(a.name)+'</b><br>'+k+' of '+list.length+' evidenced services"><span class="bl">'+esc(a.name)+'</span><span class="bt"><span class="bf" style="width:'+(list.length?100*k/list.length:0)+'%"></span></span><span class="bv">'+k+' / '+list.length+'</span></div>';}).join('')+'</div></div></div></div>'+
+      '<div class="legend"><span><span class="sw cov"></span>Evidenced on '+esc(p.name)+'</span><span><span class="sw miss"></span>Not evidenced</span><span><span class="sw open"></span>Open for every platform</span></div>'+
+      landscape('cmp',function(s){var cls=s.prevalence==='open'?'open':(covers(s,p.code)?'cov':'miss');return '<a class="tile '+cls+'" href="#svc-'+s.slug+'" data-tip="<b>'+esc(s.name)+'</b><br>'+esc(s.prevalence==='open'?'Open for every platform':(covers(s,p.code)?'Evidence: '+s.evidence:'Not evidenced on '+p.name))+'"><div class="tn">'+esc(s.name)+'</div><div class="tm"><b>'+esc(s.pattern)+'</b> · '+esc(s.asset)+'</div></a>';})+
+      '<div class="lists"><div class="panel"><p class="lab">Only '+esc(p.name)+' evidences these</p>'+(only.length?'<ul>'+only.map(function(s){return '<li><a href="#svc-'+s.slug+'">'+esc(s.name)+'</a> <span class="h">'+esc(s.area.name)+'</span></li>';}).join('')+'</ul>':'<p class="empty" style="padding:8px 0">Nothing is unique to this platform.</p>')+'</div>'+
+      '<div class="panel"><p class="lab">Common elsewhere, absent here</p><p style="margin:0;font-size:.78rem;color:var(--faint)">Services evidenced on four or more platforms but not this one.</p>'+(absent.length?'<ul>'+absent.map(function(s){return '<li><a href="#svc-'+s.slug+'">'+esc(s.name)+'</a> <span class="h">'+s.platforms.length+' platforms</span></li>';}).join('')+'</ul>':'<p class="empty" style="padding:8px 0">None. Every widely evidenced service is here.</p>')+'</div></div>'+foot();
+  }
+
+  // ---------- dashboard ----------
+  function seqColor(frac){var steps=['--seq1','--seq2','--seq3','--seq4','--seq5','--seq6','--seq7'];var i=frac<=0?0:Math.min(6,Math.max(1,Math.ceil(frac*6)));return steps[i];}
+  function seqInk(frac){var dark=cur()==='dark';var i=frac<=0?0:Math.min(6,Math.max(1,Math.ceil(frac*6)));if(dark)return i>=5?'#0D1218':'#E7ECF1';return i>=3?'#FFFFFF':'#101821';}
+  function viewDash(hl){
+    var counts=PLATFORMS.map(function(p){return {p:p,n:countFor(p.code)};}).sort(function(a,b){return b.n-a.n;});
+    var max=counts[0].n;
+    var prev={wide:0,mixed:0,rare:0,host:0,open:0};SERVICES.forEach(function(s){prev[s.prevalence]++;});
+    var prevCols={wide:'--seq6',mixed:'--seq4',rare:'--seq2',host:'--hostc',open:'--open-line'};
+    return header('What each platform enables, side by side.','Nine platforms against '+TOTAL+' services. Counts are services with evidence in that platform\'s home or protocol on this machine; they are coverage, not quality.')+
+      '<div class="dgrid"><div class="stat"><div class="n">'+TOTAL+'</div><div class="k">services in the model</div><div class="src">'+AREAS.length+' areas · '+CAPS.length+' capabilities</div></div>'+
+      '<div class="stat"><div class="n">'+EVID+'</div><div class="k">evidenced by at least one platform</div><div class="src">'+OPEN+' open for all</div></div>'+
+      '<div class="stat"><div class="n">'+counts[0].n+'</div><div class="k">widest coverage · '+esc(counts[0].p.name)+'</div><div class="src">'+Math.round(100*counts[0].n/EVID)+'% of evidenced services</div></div>'+
+      '<div class="stat"><div class="n">'+SERVICES.filter(function(s){return s.platforms.length>=6;}).length+'</div><div class="k">services on six or more platforms</div><div class="src">the usual shape of the class</div></div></div>'+
+      '<div class="drow"><div class="card"><h2>Services evidenced per platform</h2><p class="sub">Out of '+EVID+' services with any evidence. Ollama is the model host and only scores where a host can.</p><div class="hbars">'+counts.map(function(c){return '<div class="hbar" data-tip="<b>'+esc(c.p.name)+'</b><br>'+c.n+' of '+EVID+' evidenced services · '+Math.round(100*c.n/EVID)+'%"><span class="l">'+esc(c.p.name)+'<small>'+c.p.code+'</small></span><span class="t"><span class="f" style="width:'+(100*c.n/max)+'%"></span><span class="v" style="left:'+(100*c.n/max)+'%">'+c.n+'</span></span></div>';}).join('')+'</div></div>'+
+      '<div class="card"><h2>Coverage by area</h2><p class="sub">Share of each area\'s evidenced services that a platform evidences. Darker is more.</p><div style="overflow-x:auto"><table class="hm"><thead><tr><th style="width:150px"></th>'+PLATFORMS.map(function(p){return '<th class="r" title="'+esc(p.name)+'">'+p.code+'</th>';}).join('')+'</tr></thead><tbody>'+AREAS.map(function(a){var list=[];a.capabilities.forEach(function(c){list=list.concat(c.services.filter(function(s){return s.prevalence!=='open';}));});return '<tr><th title="'+esc(a.name)+'">'+esc(a.name)+'</th>'+PLATFORMS.map(function(p){var k=countFor(p.code,list),f=list.length?k/list.length:0;return '<td style="background:var('+seqColor(f)+');color:'+seqInk(f)+'" data-tip="<b>'+esc(p.name)+' · '+esc(a.name)+'</b><br>'+k+' of '+list.length+' evidenced services">'+k+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div><div class="ramp"><span>0</span><span class="r"></span><span>all</span><span style="margin-left:auto">cell shows the count</span></div></div></div>'+
+      '<div class="card" style="margin-bottom:18px"><h2>Prevalence across the landscape</h2><p class="sub">How many services are wide, mixed, rare, host-only, or open.</p><div class="stack">'+['wide','mixed','rare','host','open'].map(function(k){return '<div style="flex:'+prev[k]+';background:var('+prevCols[k]+')" data-tip="<b>'+PREV[k]+'</b><br>'+prev[k]+' services"></div>';}).join('')+'</div><div class="skey">'+['wide','mixed','rare','host','open'].map(function(k){return '<span><span class="sw" style="background:var('+prevCols[k]+')"></span>'+PREV[k]+' · '+prev[k]+'</span>';}).join('')+'</div></div>'+
+      '<div class="card"><h2>Every service, every platform</h2><p class="sub">A filled dot means the platform evidences the service. Open the service name for its definition.</p>'+
+      '<div class="filters"><label>Area <select id="fArea"><option value="">All areas</option>'+AREAS.map(function(a){return '<option value="'+a.id+'">'+esc(a.name)+'</option>';}).join('')+'</select></label><label>Platform <select id="fPlat"><option value="">All platforms</option>'+PLATFORMS.map(function(p){return '<option value="'+p.code+'">'+esc(p.name)+' only</option>';}).join('')+'</select></label><label><input type="checkbox" id="fOpen"> Hide open services</label></div>'+
+      '<div class="mwrap"><table class="mx" id="mx"><thead><tr><th>Service</th><th style="width:72px">State</th>'+PLATFORMS.map(function(p){return '<th class="c" title="'+esc(p.name)+'">'+p.code+'</th>';}).join('')+'<th class="c">Σ</th></tr></thead><tbody>'+AREAS.map(function(a){return '<tr class="grp" data-area="'+a.id+'"><td colspan="'+(PLATFORMS.length+3)+'"><span class="ab" style="background:'+hue(a)+'"></span>'+a.id+' · '+esc(a.name)+'</td></tr>'+a.capabilities.map(function(c){return c.services.map(function(s){return '<tr id="row-'+s.slug+'" class="'+(s.prevalence==='open'?'open ':'')+(hl===s?'hl':'')+'" data-area="'+a.id+'" data-open="'+(s.prevalence==='open')+'" data-plats="'+s.platforms.join(' ')+'"><td class="nm"><a href="#svc-'+s.slug+'">'+esc(s.name)+'</a><small>'+esc(c.name)+' · '+esc(s.pattern)+' · '+esc(s.asset)+'</small></td><td><span class="pv '+s.prevalence+'">'+PREV[s.prevalence]+'</span></td>'+PLATFORMS.map(function(p){var on=covers(s,p.code);return '<td class="c"><span class="dot '+(on?'on':'')+'" data-tip="<b>'+esc(p.name)+'</b><br>'+(on?'Evidences '+esc(s.name):'No evidence for '+esc(s.name))+'"></span></td>';}).join('')+'<td class="tot">'+s.platforms.length+'</td></tr>';}).join('');}).join('');}).join('')+'</tbody></table></div></div>'+foot();
+  }
+  function wireDash(){
+    var fa=document.getElementById('fArea'),fp=document.getElementById('fPlat'),fo=document.getElementById('fOpen'),tb=document.querySelector('#mx tbody');
+    if(!fa)return;
+    function apply(){
+      var a=fa.value,p=fp.value,o=fo.checked,seen={};
+      tb.querySelectorAll('tr').forEach(function(tr){
+        if(tr.classList.contains('grp')){tr.hidden=!!(a&&tr.getAttribute('data-area')!==a);return;}
+        var show=(!a||tr.getAttribute('data-area')===a)&&(!p||(' '+tr.getAttribute('data-plats')+' ').indexOf(' '+p+' ')>=0)&&(!o||tr.getAttribute('data-open')!=='true');
+        tr.hidden=!show;if(show)seen[tr.getAttribute('data-area')]=1;
+      });
+      tb.querySelectorAll('tr.grp').forEach(function(tr){if(!seen[tr.getAttribute('data-area')])tr.hidden=true;});
+    }
+    fa.addEventListener('change',apply);fp.addEventListener('change',apply);fo.addEventListener('change',apply);
+  }
+
+  // ---------- plugin seam for site/views/*.js ----------
+  var CM={DATA:DATA,AREAS:AREAS,CAPS:CAPS,SERVICES:SERVICES,PLATFORMS:PLATFORMS,byArea:byArea,byCap:byCap,bySvc:bySvc,byPlat:byPlat,byName:byName,
+    TOTAL:TOTAL,OPEN:OPEN,EVID:EVID,PREV:PREV,esc:esc,hue:hue,ico:ico,cur:cur,covers:covers,countFor:countFor,
+    header:header,foot:foot,crumbs:crumbs,tile:tile,landscape:landscape,areaHead:areaHead,levelBar:levelBar,searchBox:searchBox,refLink:refLink,
+    addRoute:function(re,view,navKey,after){ROUTES.push({re:re,view:view,nav:navKey,after:after});},
+    addNav:function(label,hash,navKey){var a=document.createElement('a');a.href=hash;a.setAttribute('data-view',navKey);a.textContent=label;document.getElementById('nav').appendChild(a);},
+    rerender:function(){render();}};
+  window.CM=CM;
+/*__VIEWS__*/
+
+  render();
+})();
+</script>

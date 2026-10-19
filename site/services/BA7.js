@@ -1,0 +1,135 @@
+// Service profiles, BA7 Models.
+module.exports = {
+"Model Catalog": {
+  inside: "The list of models available to the platform, with their capabilities, context window, and pricing, refreshed from the vendor or the local host.",
+  excludes: "Which model a session uses (Model Selection) and where requests go (Provider Routing).",
+  purpose: "Lets every other service know what models exist and what they can do.",
+  functions: [["Fetch","Pulls the catalog from the vendor, provider, or local host."],["Cache","Keeps a local copy with a refresh time."],["Describe","Answers window size, modalities, and reasoning levels per model."]],
+  entities: [["Model","One entry. Attributes: id, display name, provider, context window, modalities, reasoning levels, price, deprecated flag."]],
+  inbound: [["Vendor service","HTTP request","the catalog"],["Local Runtime","HTTP request","locally served models"],["Custom Model Build","in-process call","custom models to list"]],
+  outbound: [["Model Selection","config read","valid choices"],["Context Budget","config read","window size"],["Generation Control","config read","supported reasoning levels"]],
+  security: "None.",
+  storage: "A cache file in the platform home.",
+  performance: "Refreshed on a timer; the cache serves until then."
+},
+"Model Selection": {
+  inside: "Which model a session uses, from a default, a flag, or a mid-session switch, with the change recorded.",
+  excludes: "The list of models (Model Catalog) and the route to the provider (Provider Routing).",
+  purpose: "Lets the user match the model to the task.",
+  functions: [["Resolve default","Reads the default from settings or policy."],["Override","Applies a flag or command for the session."],["Switch","Changes the model mid-session and records the change event."]],
+  entities: [["Model Choice","One selection. Attributes: session id, model id, source (default, flag, switch), effective from turn."]],
+  inbound: [["User Settings","config read","the default"],["Headless Run","CLI flag","a run's model"],["Command Line","in-process call","a mid-session switch"],["Model Catalog","config read","valid choices"]],
+  outbound: [["Turn Execution","config read","the model to call"],["Transcript Log","event record","the model change event"]],
+  security: "Policy may restrict the choice to an allowed set.",
+  storage: "On the session.",
+  performance: "None."
+},
+"Provider Routing": {
+  inside: "Sending requests to the chosen provider or endpoint: vendor, aggregator, or local, with the right credential and base URL.",
+  excludes: "The choice of model (Model Selection) and retries (Retry & Rate Limit).",
+  purpose: "Decouples the agent from any one provider.",
+  functions: [["Configure routes","Reads providers, base URLs, and credentials."],["Route","Sends each request to the provider that serves the chosen model."],["Fail over","Uses an alternate route when configured."]],
+  entities: [["Provider Route","One route. Attributes: provider, base URL, credential reference, models served, priority."]],
+  inbound: [["Model Selection","config read","the model"],["Account & Credential","in-process call","the credential"],["Bring-your-own Key","in-process call","the user's key"],["Foreign Agent Hosting","in-process call","billing through the host"]],
+  outbound: [["Model provider","HTTP request","the model request"],["Usage Account","event record","tokens and cost per request"]],
+  security: "Credentials are attached at send time and never logged.",
+  storage: "Settings.",
+  performance: "Adds no latency beyond the network."
+},
+"Local Runtime": {
+  inside: "Serving models from the user's own machine: weights, a local API, and the client configuration that points at it.",
+  excludes: "Building custom variants (Custom Model Build) and the catalog view of them (Model Catalog).",
+  purpose: "Lets the agent run with no network and no vendor.",
+  functions: [["Serve","Runs a local inference server exposing an OpenAI-compatible API."],["Manage weights","Pulls, lists, and removes models."],["Point client","Configures the agent's base URL at the local server."]],
+  entities: [["Local Model","One set of weights. Attributes: name, size, format, pulled timestamp."],["Local Server","The running host. Attributes: port, models loaded, integrations."]],
+  inbound: [["User","in-process call","pull and run commands"],["Provider Routing","HTTP request","model requests"]],
+  outbound: [["Model Catalog","HTTP request","the locally served list"],["Runtime Log","file write","server logs"]],
+  security: "Bound to localhost by default.",
+  storage: "Weights in the runtime's home.",
+  performance: "Bounded by local hardware."
+},
+"Custom Model Build": {
+  inside: "Building a named model variant from a base and a recipe: system prompt, parameters, adapters, and template.",
+  excludes: "Serving it (Local Runtime).",
+  purpose: "Lets a user or team package a model configuration under a name.",
+  functions: [["Define recipe","Writes the build file with base, parameters, and prompt."],["Build","Creates the named model."],["Publish locally","Makes it available to the catalog."]],
+  entities: [["Model Recipe","One build file. Attributes: name, base model, parameters, system prompt, adapters."]],
+  inbound: [["User","file write","the recipe"]],
+  outbound: [["Local Runtime","in-process call","the built model"],["Model Catalog","in-process call","the new entry"]],
+  security: "None beyond the local machine.",
+  storage: "With the runtime's weights.",
+  performance: "Build is a local operation."
+},
+"Bring-your-own Key": {
+  inside: "Using the user's own provider key instead of the vendor's billing, supplied through a bridge that keeps the key out of the agent's home.",
+  excludes: "The vendor sign-in (Account & Credential) and routing (Provider Routing).",
+  purpose: "Lets the user pay their provider directly and keep control of the key.",
+  functions: [["Register key","Stores the key in the host's secure store."],["Bridge","Proxies model requests through the host that holds the key."],["Revoke","Removes the key."]],
+  entities: [["Provider Key","One key. Attributes: provider, reference, storage location, created timestamp."]],
+  inbound: [["User","in-process call","the key"]],
+  outbound: [["Provider Routing","in-process call","the key for requests"]],
+  security: "The key never enters the agent's home directory or transcripts.",
+  storage: "Secure store of the host application.",
+  performance: "One proxy hop."
+},
+"Retry & Rate Limit": {
+  inside: "Backing off and retrying when the provider throttles or fails, with the attempts recorded and the user informed.",
+  excludes: "Plan quotas (Plan & Entitlement) and provider choice (Provider Routing).",
+  purpose: "Keeps transient provider failures from ending a turn.",
+  functions: [["Detect","Recognizes rate-limit and transient error responses."],["Back off","Waits with exponential delay and jitter, honoring retry-after headers."],["Record","Logs each retry and reports when retries are exhausted."]],
+  entities: [["Retry Event","One attempt. Attributes: turn index, call index, reason, delay, attempt number, outcome."]],
+  inbound: [["Provider Routing","HTTP request","the failed response"]],
+  outbound: [["Provider Routing","HTTP request","the retried request"],["Transcript Log","event record","retry events"],["Command Line","in-process call","a notice to the user"]],
+  security: "None.",
+  storage: "Transcript events.",
+  performance: "Bounded total retry time per call."
+},
+"Generation Control": {
+  inside: "Reasoning effort and sampling parameters for a request: effort level, temperature, and limits, from settings, flags, or a per-turn choice.",
+  excludes: "Which model (Model Selection) and the plan ceiling (Plan & Entitlement).",
+  purpose: "Lets the user trade cost and latency for depth.",
+  functions: [["Resolve","Reads the settings and any override."],["Validate","Checks the values against the model's supported levels."],["Apply","Sends them with the request."]],
+  entities: [["Generation Setting","One set. Attributes: reasoning effort, temperature, max output tokens, source."]],
+  inbound: [["User Settings","config read","defaults"],["Model Catalog","config read","supported levels"],["Command Line","in-process call","a per-turn override"]],
+  outbound: [["Turn Execution","config read","the parameters for the call"],["Usage Account","event record","the effort used"]],
+  security: "None.",
+  storage: "Settings and the session.",
+  performance: "None."
+},
+"Usage Account": {
+  inside: "Tokens, calls, cached tokens, latency, and cost recorded per call, session, and model, with totals the user can see.",
+  excludes: "The plan that limits usage (Plan & Entitlement) and run caps (Run & Spend Limit).",
+  purpose: "Makes the cost of the agent's work visible and attributable.",
+  functions: [["Record","Writes a usage event per model call."],["Aggregate","Totals by session, day, and model."],["Report","Shows usage in the command line and the dashboard."]],
+  entities: [["Usage Event","One call. Attributes: session id, turn index, model, input tokens, output tokens, cached tokens, latency, cost, reasoning effort."]],
+  inbound: [["Provider Routing","event record","tokens and cost per request"],["Turn Execution","event record","per-call usage"],["MCP Sampling","event record","sampling usage"]],
+  outbound: [["Run & Spend Limit","event record","spend to date"],["Goal & Budget","event record","consumption"],["Context Budget","event record","tokens used"],["Plan & Entitlement","event record","usage against quota"]],
+  security: "User-private.",
+  storage: "A table or log in the platform home.",
+  performance: "One row per call."
+},
+"Prompt Cache": {
+  inside: "Reusing cached prompt prefixes across calls to cut cost and latency, with cached-token counts reported.",
+  excludes: "Context budgeting (Context Budget) and compaction (Context Compaction).",
+  purpose: "Makes long sessions cheaper by not resending what has not changed.",
+  functions: [["Structure","Orders the prompt so stable prefixes come first."],["Mark","Sets cache breakpoints the provider honors."],["Report","Records cached tokens per call."]],
+  entities: [["Cache Breakpoint","One marker. Attributes: turn index, position, hit or miss."]],
+  inbound: [["Prompt Assembly","in-process call","the assembled prompt"]],
+  outbound: [["Provider Routing","in-process call","the request with cache markers"],["Usage Account","event record","cached-token counts"]],
+  security: "None beyond the provider's cache terms.",
+  storage: "None locally.",
+  performance: "Cache hits cut input cost and time to first token."
+},
+"Plan & Entitlement": {
+  inside: "The subscription or quota that governs what the user may consume: plan name, allotments, quota snapshots, and what happens at the limit.",
+  excludes: "Per-run caps (Run & Spend Limit) and usage records (Usage Account).",
+  purpose: "Lets the user know what they have and when they will run out.",
+  functions: [["Fetch","Reads plan and quota from the account."],["Snapshot","Records quota state with a timestamp."],["Warn","Tells the user as the quota nears its limit and when it is exceeded."]],
+  entities: [["Entitlement","The plan. Attributes: plan name, allotments, renewal, overage policy."],["Quota Snapshot","One reading. Attributes: timestamp, used, remaining, resets at."]],
+  inbound: [["Account & Credential","in-process call","the account"],["Usage Account","event record","usage against quota"]],
+  outbound: [["Command Line","in-process call","quota warnings"],["Model Selection","config read","models the plan allows"]],
+  security: "None.",
+  storage: "Cached snapshots in the platform home.",
+  performance: "Refreshed on a timer."
+}
+};
