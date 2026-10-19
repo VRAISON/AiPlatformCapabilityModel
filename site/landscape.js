@@ -1,0 +1,198 @@
+// Source of record for the model's names, patterns, assets, prevalence, and evidence: one entry per capability
+// area, each with its capabilities (domains) and services (tiles). A tile is [name, pattern, asset, prevalence, evidence].
+// Extracted from the v3 landscape data block on 2026-10-18; edit here, then run node build.js and node export.js.
+module.exports = [
+  {id:"BA1", name:"Session & Turn", hue:"var(--a1)", domains:[
+    {name:"Session Store", tiles:[
+      ["Session Catalog","Register","Session","wide","Cx threads · Cl projects · Cp session-store · Ge history · Ag Gk He Qw"],
+      ["Transcript Log","Maintain","Transcript","wide","Cx · Cl jsonl · Cp events.jsonl · Ge Qw chats · Ag steps · He messages"],
+      ["Workspace Binding","Register","Workspace","wide","cwd on Cx Cl Cp Ge Ag Gk He Qw"],
+      ["Attachment Store","Maintain","Attachment","rare","Cp session files/ · Cp chats scratch dir"],
+      ["External Reference","Register","Reference","rare","Cp session_refs: issues, PRs"],
+    ]},
+    {name:"Turn Loop", tiles:[
+      ["Turn Execution","Fulfill","Turn","wide","prompt in, model call, tool calls, response out · Cp turns table · Cx threads · Ag steps · AHP chat channel"],
+      ["Tool Call Dispatch","Process","Tool Call","wide","Cp tool.execution events, tool-call tracker · Ag steps · ACP tool_call updates · every CLI"],
+    ]},
+    {name:"Turn Control", tiles:[
+      ["Turn Interrupt","Operate","Turn","wide","Cl stream-json interrupt · Cx turn/interrupt · Cp SDK abort() · ACP session/cancel · AHP chat/turnCancelled"],
+      ["Message Steering","Process","Inbound Message","rare","AHP steering pending messages · Cl stream-json input mid-turn · Cl Cp hook additionalContext"],
+      ["Human Input Request","Agree","Question","rare","Cl AskUserQuestion, Elicitation hook · ACP session/request_permission · AHP chat/inputRequested"],
+      ["Run & Spend Limit","Allocate","Budget","mixed","Cl --max-budget-usd · Qw --max-session-turns, --max-wall-time, --max-tool-calls · Ag --print-timeout"],
+    ]},
+    {name:"Continuity", tiles:[
+      ["Resume Set","Track","Session","mixed","Cp open-sessions, sidebar pins · Cx read receipts · Gk active_sessions · Ag presence"],
+      ["Session Search","Analyze","Transcript","rare","Cp FTS · Gk session_search"],
+      ["Session Fork","Provision","Child Session","rare","Cp fork_count · Cp workspace-fork lock"],
+      ["Progress Checkpoint","Process","Checkpoint","rare","Cp checkpoints: overview, work done, next steps"],
+      ["Session Share Link","Fulfill","Share Link","open","no home stores a shareable link to a session"],
+    ]},
+    {name:"Recovery", tiles:[
+      ["File Rewind","Maintain","File Snapshot","rare","Cp rewind-file-snapshots · Cl file-history"],
+      ["Context Compaction","Process","Context","mixed","He compression · Cp compaction events, usage_checkpoint"],
+      ["Archive & Erasure","Administer","Session","rare","Cp archives · Cp cleanup flags"],
+      ["Transcript Export","Fulfill","Export","open","no export store in any home"],
+    ]},
+  ]},
+  {id:"BA2", name:"Authority & Configuration", hue:"var(--a2)", domains:[
+    {name:"Admission", tiles:[
+      ["Workspace Trust","Agree","Folder","mixed","Cx trust_level · Cp trustedFolders · Ge · Ag · Gk decided_at"],
+      ["Managed Policy","Administer","Policy","rare","Cp managed settings: MDM, account policy · Cl dangerous-mode flag"],
+      ["Content Exclusion","Administer","Exclusion Rule","mixed","Ge .geminiignore · Cp content exclusions · Cl deny-read rules"],
+      ["Untrusted Content Guard","Assess","Content","open","no home marks pasted or fetched content"],
+    ]},
+    {name:"Identity", tiles:[
+      ["Account & Credential","Register","Account","wide","vendor login on Cx Cl Cp Ge Gk · He Qw endpoint keys"],
+      ["Data Use Consent","Agree","Consent","rare","Cl Cp telemetry opt-out"],
+      ["Agent Credential","Register","Agent Identity","open","no home gives the agent its own scoped identity; agents act with the user's login"],
+    ]},
+    {name:"Execution Control", tiles:[
+      ["Sandbox Policy","Administer","Sandbox","mixed","Cx sandbox_policy · He docker limits · Cp sandbox helper"],
+      ["Network Egress","Administer","Network Rule","rare","Cx sandbox network access · Cp proxy resolver"],
+      ["Approval Mode","Administer","Approval","mixed","Cx approval_mode · Gk permission_mode, yolo · Cl autoMode"],
+      ["Remembered Grant","Register","Grant","mixed","Cp permissions-config · Cl allow and deny lists"],
+      ["Permission Stream","Track","Permission","rare","Cp permission.requested events · Ag step permissions"],
+      ["Secret Redaction","Process","Secret","open","no redaction rule or store in any home"],
+      ["Secret Injection","Process","Credential","open","no home injects a credential into one tool call and clears it after"],
+      ["Content Safety","Assess","Output","open","no home stores a safety filter setting or verdict"],
+      ["Audit Export","Fulfill","Audit Record","open","no home exports an audit record; the transcript and permission stream are the nearest thing"],
+    ]},
+    {name:"Configuration", tiles:[
+      ["User Settings","Administer","Setting","wide","Cx config.toml · Cl settings.json · Cp config · Ge Gk He Qw settings"],
+      ["Project Settings","Administer","Project Setting","mixed","Cl project dirs · Qw QWEN.local.md · Cp per-directory grants"],
+      ["Feature Flag","Administer","Flag","mixed","Ge experimental.autoMemory · Qw enableTeamMemory · Cp agentHost flags"],
+    ]},
+  ]},
+  {id:"BA3", name:"Extension & Tools", hue:"var(--a3)", domains:[
+    {name:"Native Tools", tiles:[
+      ["Shell Execution","Operate","Terminal","wide","He terminal.backend · Cp terminal manager · Cx sandbox · every CLI"],
+      ["File Edit","Operate","File","wide","Cp diff worker, session_files · Cl file-history · Ag steps"],
+      ["Code Search","Analyze","Codebase","rare","Cp tgrep"],
+      ["Web Retrieval","Process","Web Page","mixed","Cl web search and fetch · Ge google_search grounding · Cx browser plugin"],
+      ["Browser & Computer Use","Operate","Desktop","rare","Cx computer-use, browser · He Chromium, cua"],
+      ["Code Interpreter","Operate","Interpreter","rare","Cx node_repl MCP"],
+      ["Language Service","Analyze","Symbol","rare","Cl swift-lsp plugin"],
+      ["Codebase Index","Maintain","Index","open","no home keeps a semantic index of the workspace; search is grep-shaped"],
+    ]},
+    {name:"Packages", tiles:[
+      ["Skill Pack","Register","Skill","mixed","Cl Gk He Cx Ag · Qw slot empty"],
+      ["Plugin Marketplace","Administer","Plugin","mixed","Cx curated · Cl marketplace · Gk cache · Cp slot"],
+      ["MCP Server","Administer","Server","mixed","Cx configured · Cl allow rules · Ge empty file · Cp built-in GitHub"],
+      ["Skill Mining","Analyze","Trajectory","rare","Cp forge proposals · Gk learn-traces"],
+      ["Plugin Verification","Assess","Plugin","open","no home checks a plugin's signature or hash before install"],
+      ["MCP Sampling","Fulfill","Sampling","open","no home lets a tool server ask the client to run the model"],
+    ]},
+    {name:"Behavior", tiles:[
+      ["Slash Command","Operate","Command","mixed","Cl commands · Ge commands · Qw /memory"],
+      ["Workflow Script","Fulfill","Workflow","rare","Gk .rhai workflows · Ag migrate-workflows"],
+      ["Persona Definition","Design","Persona","mixed","He SOUL, agent.personalities · Gk personas"],
+      ["Role Assignment","Allocate","Role","mixed","Gk roles · Cl agents"],
+      ["Lifecycle Hook","Process","Event","rare","Cp hook events · Qw hook docs"],
+      ["Output Style","Design","Style","rare","Qw output-language.md"],
+    ]},
+  ]},
+  {id:"BA4", name:"Memory", hue:"var(--a4)", domains:[
+    {name:"Briefing", tiles:[
+      ["Prompt Assembly","Process","Prompt","wide","instruction files, memory, and dynamic context composed into one request on every client"],
+      ["Instruction File","Design","Instruction","wide","CLAUDE.md · GEMINI.md · QWEN.md · AGENTS.md · SOUL.md"],
+      ["Instruction Precedence","Design","Context Order","mixed","Ge GEMINI.md walked upward · Qw QWEN.local.md over QWEN.md · Cl CLAUDE.md hierarchy"],
+      ["System Prompt Override","Administer","System Prompt","rare","Cl Qw --system-prompt, --append-system-prompt · Cl --bare"],
+      ["Dynamic Context","Process","Context Item","rare","Cp dynamic_context_items, workspace context"],
+      ["Context Budget","Allocate","Context Window","open","ACP usage_update reports used and size; reporting is not choosing, so no home budgets what enters the window"],
+    ]},
+    {name:"Retention", tiles:[
+      ["Memory Index","Maintain","Memory","mixed","Cl MEMORY.md · Qw and Ge designed paths"],
+      ["Topic Note","Register","Note","mixed","Cl topic files · Gk memory-v2 observations"],
+      ["Knowledge Base","Maintain","Knowledge","rare","Ag brain and knowledge"],
+      ["Team Memory","Agree","Memory","rare","Qw .qwen/team-memory"],
+      ["User Profile","Register","Profile","rare","He user_profile"],
+    ]},
+    {name:"Pipeline", tiles:[
+      ["Memory Maintenance","Process","Memory","rare","Gk consolidation · Qw dream · Cx memories schema"],
+      ["Memory Retrieval","Analyze","Memory","rare","Gk chunk index FTS"],
+      ["Memory Erasure","Administer","Memory","rare","Gk tombstones and trash"],
+    ]},
+  ]},
+  {id:"BA5", name:"Change & Review", hue:"var(--a5)", domains:[
+    {name:"Change Set", tiles:[
+      ["Change Staging","Maintain","Changeset","rare","Cp agent-host changesets"],
+      ["Edit Attribution","Track","File Edit","rare","Cp session_files · Cp edit attribution"],
+      ["Commit Authoring","Fulfill","Commit","rare","Cl co-author trailer · Cp commit message generation"],
+      ["Worktree Isolation","Administer","Worktree","rare","Gk worktrees.db · Cp worktree isolation, branch names"],
+      ["Repository State","Monitor","Repository","rare","Cp sessions.branch, repository · Cp git state"],
+    ]},
+    {name:"Review", tiles:[
+      ["Review Annotation","Assess","Annotation","rare","Cp annotations channel · Ag annotations"],
+      ["Code Review","Assess","Change","mixed","Cx review plugin, codex-auto-review · Gk reviewer persona · Cp review service"],
+      ["Pull Request Flow","Fulfill","Pull Request","rare","Cp pull-request status · Ag permissioned-github"],
+    ]},
+  ]},
+  {id:"BA6", name:"Orchestration", hue:"var(--a6)", domains:[
+    {name:"Planning", tiles:[
+      ["Execution Plan","Design","Plan","mixed","Cl plan mode, task list · Gk execute-plan skill · Ag trajectories"],
+      ["Goal & Budget","Track","Goal","rare","Cx thread_goals"],
+    ]},
+    {name:"Delegation", tiles:[
+      ["Subagent Delegation","Allocate","Agent","mixed","He async_delegations, max_iterations · Cx spawn edges · Ag nesting · Cp delegation"],
+      ["Foreign Agent Hosting","Provision","Agent SDK","rare","Cp agent host: Claude and Codex providers"],
+      ["Competing Runs","Assess","Trajectory","rare","Ag battle_mode"],
+      ["Peer Message","Process","Message","rare","VS Code inter-session send_message · He peer messages"],
+    ]},
+    {name:"Work Queue", tiles:[
+      ["Issue Intake","Register","Issue","rare","Cp coding-agent assignment · Ag permissioned-github"],
+      ["Follow-up Queue","Maintain","Queue","rare","Cx queue · Cp queue drain"],
+      ["Scheduled Job","Operate","Schedule","rare","He cron · Cp automation schedules"],
+      ["Event Trigger","Operate","Trigger","rare","Cp automation-run on event · Cl FileChanged hook"],
+      ["Work Board","Manage","Work Item","rare","He kanban"],
+    ]},
+    {name:"Reach", tiles:[
+      ["Remote Control","Operate","Endpoint","mixed","Cx enrollments · Ge hostname · Cp socket and WebSocket ingress"],
+      ["Cloud Run","Provision","Cloud Session","mixed","Cx cloud tasks · Cp coding agent · Cl remote sessions"],
+      ["Shared Room","Operate","Room","rare","He hosted rooms, peer grants, remote runs"],
+      ["Fleet Console","Monitor","Fleet","rare","Cp Mission Control"],
+    ]},
+  ]},
+  {id:"BA7", name:"Models", hue:"var(--a7)", domains:[
+    {name:"Model Supply", tiles:[
+      ["Model Catalog","Register","Model","mixed","Cx Gk caches · Cp refresh timer · Ol models"],
+      ["Model Selection","Allocate","Model","wide","Cl setting · Qw model · He default · Cp model_change events · Cx"],
+      ["Provider Routing","Allocate","Provider","mixed","He OpenRouter · Qw local endpoint · Cp BYOK proxy"],
+      ["Local Runtime","Operate","Runtime","host","Ol weights · Qw pointed at 11434"],
+      ["Custom Model Build","Provision","Model","host","Ol Modelfile, vrai-* models"],
+      ["Bring-your-own Key","Administer","Credential","rare","Cp editor bridge, not ~/.copilot"],
+      ["Retry & Rate Limit","Process","Request","rare","Cl api_retry events · Cp request retry and backoff"],
+    ]},
+    {name:"Cost", tiles:[
+      ["Generation Control","Administer","Generation Setting","mixed","Cx reasoning levels · He reasoning_effort · Cp usage field · Ol sampling params"],
+      ["Usage Account","Analyze","Usage","mixed","Cp usage events, nano-AIU · He session_model_usage · Qw · Cx tokens · Cl stats-cache"],
+      ["Prompt Cache","Process","Cache","rare","Cp prompt cache, cached-token counts"],
+      ["Plan & Entitlement","Agree","Subscription","rare","Cp quotaSnapshots, AI Credit allotment · Cl Max plan"],
+    ]},
+  ]},
+  {id:"BA8", name:"Surfaces & Operations", hue:"var(--a8)", domains:[
+    {name:"Surfaces", tiles:[
+      ["Command Line","Operate","CLI","wide","Cx Cl Cp Ge Ag Gk He Qw"],
+      ["Headless Run","Operate","Run","wide","-p with json and stream-json on Cl Qw Gk Ag Ge Cp · Cx exec"],
+      ["Agent Protocol Server","Provision","Protocol Endpoint","mixed","Cx app-server · Cp --acp · Gk agent stdio · Cp agent host local endpoint (AHP)"],
+      ["Embeddable SDK","Provision","SDK","mixed","Cp copilot-sdk · Cl agent SDK 0.3.281 · Cx SDK 0.157.0, both loaded by Cp agent host"],
+      ["IDE Attach","Operate","IDE","mixed","Cp ide lock · Cl ide · Cx chrome-native-hosts · Ge settings"],
+      ["Messaging Channel","Operate","Channel","rare","He Telegram Discord Slack WhatsApp Signal Teams"],
+      ["Voice","Process","Audio","rare","Cx dictation · He stt"],
+      ["Multimodal Input","Process","Image","mixed","pasted images and screenshots on Cl Ge Cx"],
+      ["Document Authoring","Fulfill","Document","mixed","Cx doc plugins · Gk docx pdf pptx skills"],
+      ["Media Processing","Process","Media","rare","He ffmpeg"],
+      ["Media Generation","Fulfill","Media","open","no home configures an image or video generation model"],
+      ["Canvas Document","Design","Canvas","rare","Cp canvas channel"],
+      ["Desktop & Push Notification","Operate","Notification","rare","Cx notify · Cl push notification tool"],
+      ["Web & Mobile Surface","Operate","Web App","open","no home on this machine is a web or mobile client"],
+    ]},
+    {name:"Care", tiles:[
+      ["Runtime Log","Monitor","Log","wide","Cp process logs · Cl · Ag cli.log · Ol logs"],
+      ["Telemetry & Crash","Monitor","Telemetry","mixed","Cl telemetry · Cp OTLP · Ag crashes"],
+      ["Version & Update","Maintain","Install","mixed","Cx Gk version.json · Ag updater · Cp homebrew · Cl npm"],
+      ["Gateway Liveness","Monitor","Gateway","rare","He gateway_heartbeats · Cp connection tracker"],
+      ["Health Check","Assess","Installation","rare","Cl doctor · Gk inspect"],
+      ["Feedback Capture","Register","Feedback","rare","Cl bug command"],
+    ]},
+  ]},
+];;

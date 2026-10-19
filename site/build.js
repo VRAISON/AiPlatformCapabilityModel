@@ -1,13 +1,10 @@
 // Builds site/index.html (publishable fragment) and site/preview.html (full document for local screenshots)
-// from the v3 landscape data block, descriptions.js, platforms.js, services/*.js, views/*.{css,js}, and template.html.
+// from landscape.js (the model's data block), descriptions.js, platforms.js, services/*.js, views/*.{css,js}, and template.html.
 // `require('./build.js')` returns the DATA object without writing files; `node build.js` writes the site.
 const fs = require('fs');
 const path = require('path');
 const here = __dirname;
-const src = fs.readFileSync(path.join(here, '..', 'source', 'AI Platform Landscape v3.html'), 'utf8');
-const m = src.match(/var AREAS=\[[\s\S]*?\n  \];/);
-if (!m) throw new Error('AREAS block not found');
-const AREAS = new Function(m[0] + ' return AREAS;')();
+const AREAS = require('./landscape.js');
 const D = require('./descriptions.js');
 const PLATFORMS = require('./platforms.js');
 // Service profiles, one file per area, merged by service name.

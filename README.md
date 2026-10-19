@@ -12,7 +12,7 @@ The model follows the BIAN service-landscape convention. It has three tiers.
 | 2 | Capability | An ability the platform must have inside its area, such as Session Store. | 25 |
 | 3 | Service | One functional pattern on one asset, such as Session Catalog (Register · Session). | 127 |
 
-Earlier versions and the landscape HTML use the BIAN names: business area, business domain, and service domain. They mean the same three tiers.
+Earlier versions, and the keys in `site/landscape.js`, use the BIAN names: business area, business domain, and service domain. They mean the same three tiers.
 
 The eight areas are Session & Turn (BA1), Authority & Configuration (BA2), Extension & Tools (BA3), Memory (BA4), Change & Review (BA5), Orchestration (BA6), Models (BA7), and Surfaces & Operations (BA8).
 
@@ -100,10 +100,7 @@ The method has limits. Coverage is binary presence, not quality or depth. One ma
 
 | Path | What it is |
 | --- | --- |
-| `source/AI Platform Landscape v3.html` | The current landscape: all 127 services on one page, colored by prevalence. Its data block is the source of record for names, patterns, assets, prevalence, and evidence. |
-| `source/AI Platform Landscape v2.html` | v2, which added protocol and flag evidence. Kept for history. |
-| `source/AI Platform Landscape.html` | v1, read only from what each home stores on disk. Kept for history. |
-| `source/Agent Engineering Landscape.html` | The sibling map of a governed multi-agent engineering system. |
+| `site/landscape.js` | The source of record for names, patterns, assets, prevalence, and evidence: one entry per area, each with its capabilities and services. |
 | `site/downloads/` | Rendered deliverables: the capability map as PNG and PDF, the one-page v3 poster as PDF and PNG, and a copy of `data/` served by the landscape page. |
 | `site/` | The browsable site: explorer, service pages with profiles, compare, dashboard, and data views. |
 | `data/` | The open-data release: JSON, YAML, JSON Schema, and CSV. See `data/README.md`. |
@@ -120,7 +117,7 @@ cd site
 node build.js
 ```
 
-This writes `site/index.html`, a publishable fragment, and `site/preview.html`, a full document you can open in a browser. The build reads the v3 landscape data block in `source/`, `site/descriptions.js`, `site/platforms.js`, `site/services/*.js`, `site/views/*`, and `site/template.html`. It fails if a description or profile is missing or if an interface names something that is neither a service nor an actor.
+This writes `site/index.html`, a publishable fragment, and `site/preview.html`, a full document you can open in a browser. The build reads `site/landscape.js`, `site/descriptions.js`, `site/platforms.js`, `site/services/*.js`, `site/views/*`, and `site/template.html`. It fails if a description or profile is missing or if an interface names something that is neither a service nor an actor.
 
 ### The landscape page
 

@@ -8,7 +8,7 @@ Edit these files. Everything else is generated.
 
 | What | Source of record |
 | --- | --- |
-| Areas, capabilities, and services: name, pattern, asset, prevalence, evidence | The `var AREAS=[...]` data block in `source/AI Platform Landscape v3.html`. Each service is a tile: `[name, pattern, asset, prevalence, evidence]`. |
+| Areas, capabilities, and services: name, pattern, asset, prevalence, evidence | `site/landscape.js`, one entry per area with its capabilities and services. Each service is a tile: `[name, pattern, asset, prevalence, evidence]`. |
 | Ability statements, scope, owner, and the one-line service description | `site/descriptions.js` |
 | The five-section service profiles | `site/services/BA1.js` to `site/services/BA8.js`, one file per area, keyed by service name |
 | Platform identity: code, name, kind, vendor, home, version, auth, model, note | `site/platforms.js` |
@@ -35,7 +35,7 @@ A claim needs proof that someone else can check. One of these counts:
 
 Marketing pages, release notes without a flag or file, and screenshots do not count.
 
-To add evidence, edit the service's evidence string in the v3 data block. Put the platform code next to the proof, separated from other entries by ` · `, for example `Gk session_search.sqlite`. The build derives coverage from the codes in that string. It also reads "every CLI" or "every client" as all clients, and reads `AHP` or `VS Code` as Copilot. A short override list in `site/build.js` covers the few services whose evidence string cannot name every platform. If the new evidence changes how many clients have the service, update its prevalence too: wide, mixed, rare, host, or open.
+To add evidence, edit the service's evidence string in `site/landscape.js`. Put the platform code next to the proof, separated from other entries by ` · `, for example `Gk session_search.sqlite`. The build derives coverage from the codes in that string. It also reads "every CLI" or "every client" as all clients, and reads `AHP` or `VS Code` as Copilot. A short override list in `site/build.js` covers the few services whose evidence string cannot name every platform. If the new evidence changes how many clients have the service, update its prevalence too: wide, mixed, rare, host, or open.
 
 In the pull request, say which state the evidence is in, and the date and version you read it from.
 
