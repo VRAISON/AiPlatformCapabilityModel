@@ -8,7 +8,7 @@ Edit these files. Everything else is generated.
 
 | What | Source of record |
 | --- | --- |
-| Areas, capabilities, and services: name, pattern, asset, prevalence, evidence | The `var AREAS=[...]` data block in `AI Platform Landscape v3.html`. Each service is a tile: `[name, pattern, asset, prevalence, evidence]`. |
+| Areas, capabilities, and services: name, pattern, asset, prevalence, evidence | The `var AREAS=[...]` data block in `source/AI Platform Landscape v3.html`. Each service is a tile: `[name, pattern, asset, prevalence, evidence]`. |
 | Ability statements, scope, owner, and the one-line service description | `site/descriptions.js` |
 | The five-section service profiles | `site/services/BA1.js` to `site/services/BA8.js`, one file per area, keyed by service name |
 | Platform identity: code, name, kind, vendor, home, version, auth, model, note | `site/platforms.js` |

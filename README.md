@@ -100,13 +100,11 @@ The method has limits. Coverage is binary presence, not quality or depth. One ma
 
 | Path | What it is |
 | --- | --- |
-| `AI Platform Landscape v3.html` | The current landscape: all 127 services on one page, colored by prevalence. Its data block is the source of record for names, patterns, assets, prevalence, and evidence. |
-| `AI Platform Landscape v2.html` | v2, which added protocol and flag evidence. Kept for history. |
-| `AI Platform Landscape.html` | v1, read only from what each home stores on disk. Kept for history. |
-| `Agent Engineering Landscape.html` | The sibling map of a governed multi-agent engineering system. |
-| `AI Platform Capability Model v3.md` | The v3 model as markdown tables, one tier at a time. |
-| `AI Platform Capability Model v2.md` | The v2 tables. |
-| `AI Platform Capability Model v3 Poster.pdf` and `.png` | A one-page poster of the v3 landscape. |
+| `source/AI Platform Landscape v3.html` | The current landscape: all 127 services on one page, colored by prevalence. Its data block is the source of record for names, patterns, assets, prevalence, and evidence. |
+| `source/AI Platform Landscape v2.html` | v2, which added protocol and flag evidence. Kept for history. |
+| `source/AI Platform Landscape.html` | v1, read only from what each home stores on disk. Kept for history. |
+| `source/Agent Engineering Landscape.html` | The sibling map of a governed multi-agent engineering system. |
+| `site/downloads/` | Rendered deliverables: the capability map as PNG and PDF, the one-page v3 poster as PDF and PNG, and a copy of `data/` served by the landscape page. |
 | `site/` | The browsable site: explorer, service pages with profiles, compare, dashboard, and data views. |
 | `data/` | The open-data release: JSON, YAML, JSON Schema, and CSV. See `data/README.md`. |
 | `LICENSE` | The Creative Commons Attribution 4.0 International legal text. |
@@ -122,7 +120,7 @@ cd site
 node build.js
 ```
 
-This writes `site/index.html`, a publishable fragment, and `site/preview.html`, a full document you can open in a browser. The build reads the v3 landscape data block, `site/descriptions.js`, `site/platforms.js`, `site/services/*.js`, `site/views/*`, and `site/template.html`. It fails if a description or profile is missing or if an interface names something that is neither a service nor an actor.
+This writes `site/index.html`, a publishable fragment, and `site/preview.html`, a full document you can open in a browser. The build reads the v3 landscape data block in `source/`, `site/descriptions.js`, `site/platforms.js`, `site/services/*.js`, `site/views/*`, and `site/template.html`. It fails if a description or profile is missing or if an interface names something that is neither a service nor an actor.
 
 ### The landscape page
 

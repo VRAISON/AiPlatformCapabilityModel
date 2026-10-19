@@ -14,8 +14,8 @@ const D = require('./build.js');
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const OUT_HTML = path.join(here, 'poster.html');
-const OUT_PDF = path.join(root, 'AI Platform Capability Model v3 Poster.pdf');
-const OUT_PNG = path.join(root, 'AI Platform Capability Model v3 Poster.png');
+const OUT_PDF = path.join(here, 'downloads', 'AI Platform Capability Model v3 Poster.pdf');
+const OUT_PNG = path.join(here, 'downloads', 'AI Platform Capability Model v3 Poster.png');
 const ARTIFACT_URL = 'claude.ai/artifact/N1aTBgXoraEoz2PqjavbS5';
 
 // Page geometry (mm). A1 landscape; everything below is in mm so it scales to A2/A3.

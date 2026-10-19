@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const here = __dirname;
-const src = fs.readFileSync(path.join(here, '..', 'AI Platform Landscape v3.html'), 'utf8');
+const src = fs.readFileSync(path.join(here, '..', 'source', 'AI Platform Landscape v3.html'), 'utf8');
 const m = src.match(/var AREAS=\[[\s\S]*?\n  \];/);
 if (!m) throw new Error('AREAS block not found');
 const AREAS = new Function(m[0] + ' return AREAS;')();
